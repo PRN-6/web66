@@ -1,0 +1,67 @@
+{
+  "name": "chokidar",
+  "description": "Minimal and efficient cross-platform file watching library",
+  "version": "6.0.0",
+  "type": "module",
+  "homepage": "https://github.com/paulmillr/chokidar",
+  "author": "Paul Miller (https://paulmillr.com)",
+  "files": [
+    "backend.js",
+    "backend.d.ts",
+    "index.js",
+    "index.d.ts",
+    "policy.js",
+    "policy.d.ts",
+    "reconcile.js",
+    "reconcile.d.ts",
+    "runtime.js",
+    "runtime.d.ts",
+    "tree.js",
+    "tree.d.ts"
+  ],
+  "main": "./index.js",
+  "exports": {
+    ".": {
+      "default": "./index.js"
+    }
+  },
+  "dependencies": {
+    "readdirp": "^5.1.1"
+  },
+  "devDependencies": {
+    "@paulmillr/jsbt": "0.7.2",
+    "@types/node": "26.5.0",
+    "prettier": "3.8.3",
+    "typescript": "6.0.3"
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">= 22.22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulmillr/chokidar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/paulmillr/chokidar/issues"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write src benchmark scripts .github/funding.yml .github/workflows package.json README.md",
+    "test": "node index.test.js",
+    "benchmark": "node benchmark/bench.mjs",
+    "test:bun1": "bun index.test.js",
+    "test:vms": "node scripts/test-vms.mjs"
+  },
+  "keywords": [
+    "fs",
+    "watch",
+    "watchFile",
+    "watcher",
+    "watching",
+    "file",
+    "fsevents"
+  ],
+  "funding": "https://paulmillr.com/funding/"
+}

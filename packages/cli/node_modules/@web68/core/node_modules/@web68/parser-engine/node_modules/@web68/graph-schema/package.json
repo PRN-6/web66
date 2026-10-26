@@ -1,7 +1,5 @@
 ﻿{
   "name": "@web68/graph-schema",
-  "version": "0.0.1",
-  "main": "index.ts",
-  "types": "index.ts",
-  "dependencies": {}
+  "version": "1.0.0",
+  "main": "index.ts"
 }

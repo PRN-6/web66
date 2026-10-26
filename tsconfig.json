@@ -1,19 +1,23 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "strict": false,
+    "outDir": "dist",
+    "rootDir": ".",
     "baseUrl": ".",
     "paths": {
       "@web68/core": ["packages/core/index.ts"],
       "@web68/graph-schema": ["packages/graph-schema/index.ts"],
       "@web68/parser-engine": ["packages/parser-engine/index.ts"],
-      "@web68/language-typescript": ["packages/language-typescript/index.ts"]
-    }
+      "@web68/language-typescript": ["packages/language-typescript/index.ts"],
+      "@web68/language-python": ["packages/language-python/index.ts"]
+    },
+    "ignoreDeprecations": "6.0"
   },
-  "include": ["**/*.ts"]
+  "include": ["packages/**/*"]
 }

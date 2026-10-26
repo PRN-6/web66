@@ -1,9 +1,5 @@
 ﻿{
   "name": "@web68/parser-engine",
-  "version": "0.0.1",
-  "main": "index.ts",
-  "types": "index.ts",
-  "dependencies": {
-    "@web68/graph-schema": "workspace:*"
-  }
+  "version": "1.0.0",
+  "main": "index.ts"
 }

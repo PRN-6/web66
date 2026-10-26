@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -6,10 +6,14 @@ import ReactFlow, {
   Node,
   Edge,
   ConnectionLineType,
-  Panel
+  Panel,
+  useNodesState,
+  useEdgesState,
+  reactFlowInstance
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Search, FileCode, Box, Zap, Upload } from 'lucide-react';
+import { Search, FileCode, Box, Zap, Wifi } from 'lucide-react';
+import { io } from 'socket.io-client';
 
 // --- Types ---
 interface Web68Node extends Node {
@@ -33,30 +37,83 @@ interface ProjectGraph {
 }
 
 export default function App() {
-  const [nodes, setNodes] = useState<Web68Node[]>([]);
-  const [edges, setEdges] = useState<Web68Edge[]>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState<Web68Node | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const { fitView } = reactFlowInstance || { fitView: () => {} }; // Fallback if instance isn't ready
 
+  useEffect(() => {
+    const socket = io('http://localhost:3001');
+
+    socket.on('connect', () => {
+      setIsConnected(true);
+      console.log('🌐 Connected to Web68 Server');
+    });
+
+    socket.on('disconnect', () => {
+      setIsConnected(false);
+    });
+
+    socket.on('graph-update', (graph: ProjectGraph) => {
+      console.log('🚀 Received Live Graph Update:', graph);
+
+      if (!graph.nodes || graph.nodes.length === 0) {
+        console.warn('⚠️ Received empty graph');
+        return;
+      }
+
+      // Transform Web68 Graph Nodes to React Flow Nodes
+      const rfNodes: Web68Node[] = graph.nodes.map((n, index) => {
+        // Find existing node to preserve position
+        const existing = nodes.find(node => node.id === n.id);
+        return {
+          id: n.id,
+          type: 'default',
+          // Spread nodes out more significantly to avoid overlap
+          position: existing ? existing.position : {
+            x: Math.random() * 1000 - 500,
+            y: Math.random() * 1000 - 500
+          },
+          data: { label: n.label, type: n.type, details: n.metadata },
+        };
+      });
+
+      const rfEdges: Web68Edge[] = graph.edges.map((e) => ({
+        id: e.id,
+        source: e.source,
+        target: e.target,
+        label: e.type,
+        data: { type: e.type },
+      }));
+
+      setNodes(rfNodes);
+      setEdges(rfEdges);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [nodes]);
+
+  // Handle manual file upload for those not using the live server
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    setIsLoading(true);
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const graph: ProjectGraph = JSON.parse(e.target?.result as string);
+        console.log('📁 Loaded graph from file:', graph);
 
-        // Transform Web68 Graph Nodes to React Flow Nodes
         const rfNodes: Web68Node[] = graph.nodes.map((n, index) => ({
           id: n.id,
           type: 'default',
-          position: { x: Math.random() * 800, y: Math.random() * 600 }, // Simple random layout for now
+          position: { x: index * 150, y: index * 50 },
           data: { label: n.label, type: n.type, details: n.metadata },
         }));
 
-        // Transform Web68 Graph Edges to React Flow Edges
         const rfEdges: Web68Edge[] = graph.edges.map((e) => ({
           id: e.id,
           source: e.source,
@@ -68,9 +125,7 @@ export default function App() {
         setNodes(rfNodes);
         setEdges(rfEdges);
       } catch (err) {
-        alert('Error parsing graph JSON. Please ensure it is a valid Web68 export.');
-      } finally {
-        setIsLoading(false);
+        alert('Error parsing JSON');
       }
     };
     reader.readAsText(file);
@@ -83,14 +138,14 @@ export default function App() {
         <div className="p-4 border-b border-slate-700">
           <h1 className="text-xl font-bold flex items-center gap-2">
             <Zap className="text-yellow-400" size={20} />
-            Web68
+            Web68 <span className={`text-[10px] px-1 rounded ${isConnected ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>LIVE</span>
           </h1>
         </div>
 
         <div className="p-4">
           <label className="flex items-center justify-center gap-2 w-full py-2 px-4 bg-blue-600 hover:bg-blue-500 rounded cursor-pointer text-sm font-medium transition-colors">
             <Upload size={16} />
-            {isLoading ? 'Loading...' : 'Load Graph JSON'}
+            Load Graph JSON
             <input type="file" accept=".json" className="hidden" onChange={handleFileUpload} />
           </label>
         </div>
@@ -119,6 +174,8 @@ export default function App() {
         <ReactFlow
           nodes={nodes}
           edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
           onNodeClick={(_, node) => setSelectedNode(node as Web68Node)}
           connectionLineType={ConnectionLineType.SmoothStep}
           fitView
@@ -174,3 +231,6 @@ export default function App() {
     </div>
   );
 }
+
+// Add the Upload icon import which was missing in previous turn
+import { Upload } from 'lucide-react';

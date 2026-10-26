@@ -1,0 +1,367 @@
+import { stat } from 'node:fs/promises';
+import * as sp from 'node:path';
+import { EVENTS, isMissingError, isWindows, logicalPathKey, statIdentity, } from './runtime.js';
+import { LifecycleScope } from './tree.js';
+/**
+ * `writeFile` creates or truncates before it writes, and a callback can stat the
+ * file in between (always on Windows with Node 22/24). An `add` or leading
+ * `change` that sees an empty file is held until the data arrives, at most this
+ * long: one event, with the written stats.
+ */
+const EMPTY_FILE_HOLD = 10;
+function isEmptyFile(stats) {
+    return stats !== undefined && stats.isFile() && statIdentity(stats).size === 0;
+}
+function sameChangeStats(left, right) {
+    if (left === undefined || right === undefined)
+        return false;
+    const a = statIdentity(left);
+    const b = statIdentity(right);
+    return a.size === b.size && a.mtimeMs === b.mtimeMs && a.ino === b.ino;
+}
+/** Converts truthful tree transitions into the public, timing-aware event API. */
+export class EventPolicy {
+    pendingWrites = new Map();
+    pendingUnlinks = new Map();
+    pendingChanges = new Map();
+    heldAdds = new Map();
+    throttled = new Map();
+    context;
+    constructor(context) {
+        this.context = context;
+    }
+    presentPath(path) {
+        if (isWindows)
+            path = sp.normalize(path);
+        return this.context.options.cwd ? sp.relative(this.context.options.cwd, path) : path;
+    }
+    dropHeldAdd(logicalKey) {
+        const held = this.heldAdds.get(logicalKey);
+        if (held)
+            this.context.scheduler.clearTimeout(held.timer);
+        this.heldAdds.delete(logicalKey);
+    }
+    dropPendingChange(logicalKey) {
+        const pending = this.pendingChanges.get(logicalKey);
+        if (pending?.held)
+            this.context.scheduler.clearTimeout(pending.held.timer);
+        this.pendingChanges.delete(logicalKey);
+    }
+    setTimeout(callback, delay) {
+        const timer = this.context.scheduler.setTimeout(callback, delay);
+        if (!this.context.options.persistent)
+            timer.unref();
+        return timer;
+    }
+    async emit(event, path, stats) {
+        if (this.context.isClosed())
+            return;
+        const { options, scheduler } = this.context;
+        const sourcePath = path;
+        const logicalKey = logicalPathKey(path);
+        const generation = this.context.lifecycle.generation;
+        const pathGeneration = this.context.capturePathGeneration();
+        path = this.presentPath(path);
+        const args = [path];
+        if (stats != null)
+            args.push(stats);
+        const heldAdd = this.heldAdds.get(logicalKey);
+        if (heldAdd) {
+            if (event === EVENTS.CHANGE) {
+                // The data of a held create landed: announce the file with it.
+                heldAdd.path = sourcePath;
+                if (stats)
+                    heldAdd.stats = stats;
+                if (!isEmptyFile(stats))
+                    heldAdd.release();
+                return;
+            }
+            // Any other event for the path follows the add it held back.
+            heldAdd.release();
+        }
+        if (event === EVENTS.UNLINK || event === EVENTS.UNLINK_DIR) {
+            this.dropPendingChange(logicalKey);
+            this.throttled.get(EVENTS.CHANGE)?.get(logicalKey)?.clear(false);
+        }
+        const awf = options.awaitWriteFinish;
+        const pendingWrite = awf ? this.pendingWrites.get(logicalKey) : undefined;
+        if (pendingWrite) {
+            pendingWrite.lastChange = scheduler.now();
+            return;
+        }
+        if (options.atomic) {
+            if (event === EVENTS.UNLINK) {
+                const existing = this.pendingUnlinks.get(logicalKey);
+                if (existing)
+                    scheduler.clearTimeout(existing.timer);
+                const entry = [event, ...args];
+                const timer = this.setTimeout(() => {
+                    const pending = this.pendingUnlinks.get(logicalKey);
+                    if (!pending || pending.timer !== timer)
+                        return;
+                    this.pendingUnlinks.delete(logicalKey);
+                    if (this.context.isClosed())
+                        return;
+                    const [pendingEvent, ...pendingArgs] = pending.event;
+                    this.context.publish(pendingEvent, pendingArgs);
+                }, typeof options.atomic === 'number' ? options.atomic : 100);
+                this.pendingUnlinks.set(logicalKey, { event: entry, timer });
+                return;
+            }
+            const pendingUnlink = this.pendingUnlinks.get(logicalKey);
+            if (event === EVENTS.ADD && pendingUnlink) {
+                event = EVENTS.CHANGE;
+                scheduler.clearTimeout(pendingUnlink.timer);
+                this.pendingUnlinks.delete(logicalKey);
+            }
+        }
+        if (awf && (event === EVENTS.ADD || event === EVENTS.CHANGE) && this.context.isReady()) {
+            const awfEmit = (error, currentStats) => {
+                if (this.context.isClosed())
+                    return;
+                if (error) {
+                    event = EVENTS.ERROR;
+                    args[0] = error;
+                    this.context.publish(event, args);
+                }
+                else if (currentStats) {
+                    if (args.length > 1)
+                        args[1] = currentStats;
+                    else
+                        args.push(currentStats);
+                    this.context.publish(event, args);
+                }
+            };
+            this.awaitWriteFinish(path, awf.stabilityThreshold, event, awfEmit, logicalKey);
+            return;
+        }
+        if (event === EVENTS.ADD && isEmptyFile(stats) && this.context.isReady()) {
+            const held = {
+                path: sourcePath,
+                stats,
+                release: () => {
+                    this.context.scheduler.clearTimeout(held.timer);
+                    if (this.heldAdds.get(logicalKey) !== held)
+                        return;
+                    this.heldAdds.delete(logicalKey);
+                    if (this.context.isClosed() ||
+                        !this.context.lifecycle.isActive(generation) ||
+                        !this.context.isPathGenerationActive(logicalKey, pathGeneration)) {
+                        return;
+                    }
+                    const heldArgs = [this.presentPath(held.path)];
+                    if (held.stats)
+                        heldArgs.push(held.stats);
+                    this.context.publish(EVENTS.ADD, heldArgs);
+                },
+            };
+            held.timer = this.setTimeout(held.release, EMPTY_FILE_HOLD);
+            this.heldAdds.set(logicalKey, held);
+            return;
+        }
+        if (event === EVENTS.CHANGE) {
+            const throttler = this.throttle(EVENTS.CHANGE, sourcePath, 50, (suppressedCount) => {
+                const pending = this.pendingChanges.get(logicalKey);
+                this.dropPendingChange(logicalKey);
+                if (suppressedCount > 0 &&
+                    pending?.replay &&
+                    this.context.lifecycle.isActive(generation) &&
+                    this.context.isPathGenerationActive(logicalKey, pathGeneration)) {
+                    void this.emit(EVENTS.CHANGE, pending.path, pending.stats);
+                }
+            });
+            if (!throttler) {
+                const pending = this.pendingChanges.get(logicalKey);
+                if (pending && !sameChangeStats(pending.stats, stats)) {
+                    pending.path = sourcePath;
+                    pending.stats = stats;
+                    pending.replay = true;
+                    // The data of a held truncate-then-write landed: publish it now.
+                    if (pending.held && !isEmptyFile(stats))
+                        pending.held.release();
+                }
+                return;
+            }
+            const pending = { path: sourcePath, stats, replay: false };
+            this.pendingChanges.set(logicalKey, pending);
+            if (isEmptyFile(stats)) {
+                // Publish the newest stats seen; later writes replay as usual.
+                const release = () => {
+                    if (pending.held)
+                        this.context.scheduler.clearTimeout(pending.held.timer);
+                    pending.held = undefined;
+                    if (this.pendingChanges.get(logicalKey) !== pending ||
+                        this.context.isClosed() ||
+                        !this.context.lifecycle.isActive(generation) ||
+                        !this.context.isPathGenerationActive(logicalKey, pathGeneration)) {
+                        return;
+                    }
+                    pending.replay = false;
+                    const heldArgs = [this.presentPath(pending.path)];
+                    if (pending.stats)
+                        heldArgs.push(pending.stats);
+                    this.context.publish(EVENTS.CHANGE, heldArgs);
+                };
+                pending.held = { timer: this.setTimeout(release, EMPTY_FILE_HOLD), release };
+                return;
+            }
+        }
+        if (options.alwaysStat &&
+            stats === undefined &&
+            (event === EVENTS.ADD || event === EVENTS.ADD_DIR || event === EVENTS.CHANGE)) {
+            const fullPath = options.cwd ? sp.join(options.cwd, path) : path;
+            try {
+                stats = await stat(fullPath);
+            }
+            catch (error) {
+                this.context.handleError(error);
+            }
+            if (!stats ||
+                !this.context.lifecycle.isActive(generation) ||
+                !this.context.isPathGenerationActive(logicalKey, pathGeneration)) {
+                return;
+            }
+            args.push(stats);
+        }
+        this.context.publish(event, args);
+    }
+    throttle(actionType, path, timeout, onRelease) {
+        let action = this.throttled.get(actionType);
+        if (!action) {
+            action = new Map();
+            this.throttled.set(actionType, action);
+        }
+        const key = actionType === 'readdir' ? path : logicalPathKey(path);
+        const active = action.get(key);
+        if (active) {
+            active.count += 1;
+            return false;
+        }
+        let timeoutObject;
+        const clear = (invokeRelease = true) => {
+            const item = action.get(key);
+            const count = item?.count ?? 0;
+            action.delete(key);
+            this.context.scheduler.clearTimeout(timeoutObject);
+            if (item)
+                this.context.scheduler.clearTimeout(item.timeoutObject);
+            if (invokeRelease && onRelease)
+                onRelease(count);
+            return count;
+        };
+        timeoutObject = this.setTimeout(clear, timeout);
+        const throttler = { timeoutObject, clear, count: 0 };
+        action.set(key, throttler);
+        return throttler;
+    }
+    awaitWriteFinish(path, threshold, event, awfEmit, logicalKey) {
+        const awf = this.context.options.awaitWriteFinish;
+        if (typeof awf !== 'object')
+            return;
+        const pollInterval = awf.pollInterval;
+        let timeoutHandler;
+        let fullPath = path;
+        if (this.context.options.cwd && !sp.isAbsolute(path)) {
+            fullPath = sp.join(this.context.options.cwd, path);
+        }
+        const writeKey = logicalKey ?? logicalPathKey(fullPath);
+        if (this.pendingWrites.has(writeKey))
+            return;
+        const generation = this.context.lifecycle.generation;
+        const pending = {
+            lastChange: this.context.scheduler.now(),
+            cancelWait: () => {
+                if (this.pendingWrites.get(writeKey) === pending)
+                    this.pendingWrites.delete(writeKey);
+                this.context.scheduler.clearTimeout(timeoutHandler);
+                return event;
+            },
+        };
+        // A stat in flight when this wait is cancelled must not adopt a newer wait for the path.
+        const isCurrent = () => this.context.lifecycle.isActive(generation) && this.pendingWrites.get(writeKey) === pending;
+        const inspect = (previous) => {
+            const task = (async () => {
+                let current;
+                try {
+                    current = await stat(fullPath);
+                }
+                catch (error) {
+                    if (!isCurrent())
+                        return;
+                    if (isMissingError(error)) {
+                        this.context.remove(sp.dirname(fullPath), sp.basename(fullPath));
+                        // Never leave the path suppressed if the removal did not cancel this wait.
+                        if (this.pendingWrites.get(writeKey) === pending)
+                            pending.cancelWait();
+                    }
+                    else {
+                        this.pendingWrites.delete(writeKey);
+                        awfEmit(error);
+                    }
+                    return;
+                }
+                if (!isCurrent())
+                    return;
+                const now = this.context.scheduler.now();
+                if (previous && current.size !== previous.size)
+                    pending.lastChange = now;
+                if (now - pending.lastChange >= threshold) {
+                    this.pendingWrites.delete(writeKey);
+                    awfEmit(undefined, current);
+                }
+                else {
+                    timeoutHandler = this.setTimeout(() => inspect(current), pollInterval);
+                }
+            })();
+            this.context.lifecycle.track(task);
+        };
+        this.pendingWrites.set(writeKey, pending);
+        timeoutHandler = this.setTimeout(inspect, pollInterval);
+    }
+    cancelPath(path) {
+        const logicalKey = logicalPathKey(path);
+        const pendingUnlink = this.pendingUnlinks.get(logicalKey);
+        if (pendingUnlink) {
+            this.context.scheduler.clearTimeout(pendingUnlink.timer);
+            this.pendingUnlinks.delete(logicalKey);
+        }
+        this.pendingWrites.get(logicalKey)?.cancelWait();
+        this.dropPendingChange(logicalKey);
+        this.dropHeldAdd(logicalKey);
+        ['watch', 'add', 'remove', 'change'].forEach((actionType) => {
+            this.throttled.get(actionType)?.get(logicalKey)?.clear(false);
+        });
+        const readdirEntries = this.throttled.get('readdir');
+        readdirEntries?.get(logicalKey)?.clear(false);
+        readdirEntries
+            ?.get(`${logicalPathKey(sp.dirname(logicalKey))}\0${sp.basename(logicalKey)}`)
+            ?.clear(false);
+    }
+    cancelWhere(contains) {
+        const paths = new Set([
+            ...this.pendingUnlinks.keys(),
+            ...this.pendingWrites.keys(),
+            ...this.pendingChanges.keys(),
+            ...this.heldAdds.keys(),
+        ]);
+        [...paths].filter(contains).forEach((path) => this.cancelPath(path));
+        this.throttled.forEach((entries, actionType) => {
+            [...entries.keys()]
+                .filter((key) => contains(actionType === 'readdir' ? key.split('\0', 1)[0] : key))
+                .forEach((key) => entries.get(key)?.clear(false));
+        });
+    }
+    close() {
+        this.pendingWrites.forEach((pending) => pending.cancelWait());
+        this.pendingUnlinks.forEach(({ timer }) => this.context.scheduler.clearTimeout(timer));
+        this.pendingUnlinks.clear();
+        this.pendingChanges.forEach(({ held }) => this.context.scheduler.clearTimeout(held?.timer));
+        this.pendingChanges.clear();
+        this.heldAdds.forEach(({ timer }) => this.context.scheduler.clearTimeout(timer));
+        this.heldAdds.clear();
+        this.throttled.forEach((entries) => {
+            entries.forEach((throttler) => throttler.clear(false));
+        });
+        this.throttled.clear();
+    }
+}
