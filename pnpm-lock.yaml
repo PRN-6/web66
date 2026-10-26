@@ -1,0 +1,46 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .: {}
+
+  packages/cli:
+    dependencies:
+      '@web68/core':
+        specifier: workspace:*
+        version: link:../core
+
+  packages/core:
+    dependencies:
+      '@web68/graph-schema':
+        specifier: workspace:*
+        version: link:../graph-schema
+      '@web68/parser-engine':
+        specifier: workspace:*
+        version: link:../parser-engine
+
+  packages/graph-schema: {}
+
+  packages/language-python:
+    dependencies:
+      '@web68/parser-engine':
+        specifier: workspace:*
+        version: link:../parser-engine
+
+  packages/language-typescript:
+    dependencies:
+      '@web68/parser-engine':
+        specifier: workspace:*
+        version: link:../parser-engine
+
+  packages/parser-engine:
+    dependencies:
+      '@web68/graph-schema':
+        specifier: workspace:*
+        version: link:../graph-schema
+
+  packages/viewer: {}

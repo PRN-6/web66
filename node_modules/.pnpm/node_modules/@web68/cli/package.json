@@ -1,0 +1,9 @@
+﻿{
+  "name": "@web68/cli",
+  "version": "0.0.1",
+  "main": "index.ts",
+  "types": "index.ts",
+  "dependencies": {
+    "@web68/core": "workspace:*"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@web68/core": ["packages/core/index.ts"],
+      "@web68/graph-schema": ["packages/graph-schema/index.ts"],
+      "@web68/parser-engine": ["packages/parser-engine/index.ts"],
+      "@web68/language-typescript": ["packages/language-typescript/index.ts"]
+    }
+  },
+  "include": ["**/*.ts"]
+}
