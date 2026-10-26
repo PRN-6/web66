@@ -10,13 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "autoprefixer": "^10.6.1",
     "lucide-react": "^1.61.0",
-    "postcss": "^8.5.31",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "reactflow": "^11.11.4",
-    "tailwindcss": "^4.3.3",
     "zustand": "^5.0.16"
   },
   "devDependencies": {
@@ -24,7 +21,10 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "autoprefixer": "^10.6.1",
     "oxlint": "^1.88.0",
+    "postcss": "^8.5.31",
+    "tailwindcss": "^4.3.3",
     "typescript": "~6.0.3",
     "vite": "^8.3.4"
   }
