@@ -4,27 +4,75 @@
 
 ---
 
-## ⚡ The One-Command Experience
+## ⚡ Quick Start (No Installation Needed)
 
-Analyze and explore any local project with a single command:
+Anyone can run Web66 in **any** project directory without installing anything:
 
 ```bash
 # Analyze and serve current directory (opens http://localhost:6868)
-npx web66
+npx github:PRN-6/web66
 
-# Or analyze a specific folder / project on a custom port
-npx web66 ./src --port 3000
+# Or analyze a specific folder
+npx github:PRN-6/web66 ./src
 
-# Headless / no auto-open browser
-npx web66 ../my-app --no-open
+# Change port or disable browser auto-open
+npx github:PRN-6/web66 . --port 3000 --no-open
 ```
 
-### Or using npm scripts:
+---
+
+## 💻 Install Globally as a CLI Command
+
+To use `web66` anywhere on your machine like a native tool:
+
 ```bash
-# Launch interactive cosmos visualizer on tests/demo-project
+# Install globally from GitHub
+npm install -g github:PRN-6/web66
+```
+
+Then run it in **any** project folder:
+```bash
+web66 .
+```
+
+---
+
+## 📦 Add to a Team Project
+
+Install as a devDependency in your repository:
+
+```bash
+npm install -D github:PRN-6/web66
+```
+
+Add to your `package.json`:
+```json
+{
+  "scripts": {
+    "visualize": "web66 ."
+  }
+}
+```
+
+Now anyone on your team can run:
+```bash
+npm run visualize
+```
+
+---
+
+## 🛠️ Local Development & Contributing
+
+Clone the repository and test it locally:
+
+```bash
+git clone https://github.com/PRN-6/web66.git
+cd web66
+
+# Launch interactive cosmos visualizer on the included demo project
 npm run dev
 
-# Run test suite
+# Run automated test suite
 npm test
 ```
 
@@ -32,9 +80,9 @@ npm test
 
 ## ✨ Features
 
-- 🌟 **Supermassive Core Node**: Automatically detects project root entry files (`index.ts`, `main.py`, `app.ts`, `package.json`).
+- 🌟 **Supermassive Core Node**: Automatically detects project root entry points (`index.ts`, `main.ts`, `main.py`, `app.py`, `package.json`).
 - 🕸️ **Radial Web Orbit Layout**: The root node is stationed at the cosmic center $(0,0)$. Connected files radiate outward in $360^\circ$ concentric orbital rings, while functions, classes, and types orbit their parent files as satellite moons.
-- 🫧 **Organic Glowing Blobs**: Nodes are fluid, pulsating celestial blobs with soft outer halos and color-coding:
+- 🫧 **Organic Glowing Blobs**: Fluid celestial blobs with glowing halos and color-coding:
   - ☀️ **Supernova Gold**: Core Entry / Root File
   - 🌐 **Plasma Cyan**: Files & Modules
   - 💜 **Neon Violet**: Classes
@@ -50,15 +98,15 @@ npm test
 
 ---
 
-## 🛠️ Architecture
+## 🏗️ Architecture
 
-- **`bin/web66.js`**: Executable CLI binary for `npx web66`.
-- **`packages/core/engine.js`**: AST and symbol extraction engine (TypeScript, JavaScript, Python, JSON).
-- **`packages/core/server.js`**: Zero-external-dependency HTTP server, native RFC 6455 WebSocket streaming, and recursive file watcher.
+- **`bin/web66.js`**: Executable CLI binary runner.
+- **`packages/core/engine.js`**: Universal AST and symbol extraction engine (TypeScript, JavaScript, Python, JSON) with zero runtime dependencies.
+- **`packages/core/server.js`**: Built-in HTTP server, native RFC 6455 WebSocket streaming, and recursive file watcher.
 - **`packages/viewer/client/`**: Standalone, lightweight cosmic web canvas visualizer.
-- **`apps/web/`**: ReactFlow-based React companion visualizer.
+- **`apps/web/`**: ReactFlow-based companion visualizer.
 
 ---
 
 ## 📄 License
-MIT
+MIT © [PRN-6](https://github.com/PRN-6)
