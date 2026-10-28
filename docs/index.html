@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web66 — Cosmic Codebase Intelligence</title>
+  <meta name="description" content="Google Maps for Source Code. Transforms any codebase into an explorable cosmic web of organic glowing blobs.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23fbbf24'/></svg>">
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Top Minimalist Navigation Bar -->
+    <nav class="navbar">
+      <a href="#home" class="nav-link active">home</a>
+      <span class="nav-dot">·</span>
+      <a href="#demo" class="nav-link">demo</a>
+      <span class="nav-dot">·</span>
+      <a href="#features" class="nav-link">features</a>
+      <span class="nav-dot">·</span>
+      <a href="#cli" class="nav-link">cli</a>
+      <span class="nav-dot">·</span>
+      <a href="https://github.com/PRN-6/web66" target="_blank" class="nav-link">github ↗</a>
+    </nav>
+
+    <!-- Bento Row 1: Profile Card + Introduction Card -->
+    <section class="bento-grid" id="home">
+
+      <!-- Left Profile Card -->
+      <aside class="bento-card profile-card">
+        <div>
+          <div class="hero-avatar-box">
+            <div class="pixel-art-screen">
+              <div class="pixel-orbit">
+                <span class="pixel-planet"></span>
+              </div>
+              <div class="pixel-sun"></div>
+            </div>
+          </div>
+
+          <h1 class="profile-name">prinson</h1>
+          <div class="profile-tagline">* Prinson Royal Nazareth<br>Developer · Builder</div>
+
+          <div class="profile-quote">
+            "If I don't have to do it, I won't. If I have to do it, I'll make it quick."<br>
+            — Houtarou Oreki
+          </div>
+        </div>
+
+        <div class="social-links">
+          <a href="https://github.com/PRN-6" target="_blank" class="social-item">github <span class="arrow-icon">↗</span></a>
+          <a href="https://github.com/PRN-6/web66" target="_blank" class="social-item">web66 repo <span class="arrow-icon">↗</span></a>
+          <a href="mailto:prinsonnazareth2@gmail.com" class="social-item">email <span class="arrow-icon">↗</span></a>
+          <a href="https://x.com" target="_blank" class="social-item">x <span class="arrow-icon">↗</span></a>
+        </div>
+      </aside>
+
+      <!-- Right Main Web66 Intro Card -->
+      <main class="bento-card">
+        <div class="card-tag">&gt;_ // about web66</div>
+
+        <p style="font-size: 14px; color: var(--text-white); margin-bottom: 12px; font-weight: 500;">
+          Google Maps for Source Code. Transforms any codebase into an explorable cosmic web of organic glowing blobs.
+        </p>
+
+        <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 16px;">
+          Web66 is a universal codebase intelligence engine. It scans your Abstract Syntax Tree (AST), extracts functions, classes, and dependencies, and renders an interactive radial galaxy on your localhost with instant live sync.
+        </p>
+
+        <!-- Command Prompt Box -->
+        <div class="card-tag" style="margin-top: 14px; margin-bottom: 6px;">&gt;_ // quickstart (no install needed)</div>
+        <div class="command-box">
+          <span class="cmd-prefix">&gt;</span>
+          <code class="cmd-text" id="cmd-run">npx github:PRN-6/web66</code>
+          <button class="copy-btn" onclick="copyCommand('npx github:PRN-6/web66', this)">
+            <span class="copy-label">copy</span>
+          </button>
+        </div>
+
+        <div class="command-box" style="margin-top: 8px;">
+          <span class="cmd-prefix">&gt;</span>
+          <code class="cmd-text" id="cmd-global">npm install -g github:PRN-6/web66</code>
+          <button class="copy-btn" onclick="copyCommand('npm install -g github:PRN-6/web66', this)">
+            <span class="copy-label">copy</span>
+          </button>
+        </div>
+
+        <!-- Buttons -->
+        <div class="btn-group">
+          <a href="https://github.com/PRN-6/web66" target="_blank" class="pill-button">
+            ⭐ star on github ↗
+          </a>
+          <a href="#demo" class="pill-button">
+            🪐 test live demo ↓
+          </a>
+        </div>
+
+        <!-- Click Counter Retro Widget -->
+        <div class="counter-box" onclick="incrementClick()">
+          <span class="counter-click">click me )</span>
+          <span class="counter-num" id="total-clicks">124</span>
+          <span style="color: var(--text-dim);">you :</span>
+          <span class="counter-num" id="user-clicks">0</span>
+        </div>
+      </main>
+
+    </section>
+
+    <!-- Bento Row 2: Live Interactive Canvas Demo -->
+    <section class="bento-card" id="demo" style="margin-bottom: 16px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+        <div class="card-tag" style="margin-bottom: 0;">* // interactive cosmic web preview</div>
+        <div style="font-size: 11px; color: var(--text-dim);">drag blobs to play with gravitational physics</div>
+      </div>
+
+      <div class="demo-canvas-wrapper">
+        <canvas id="demo-canvas"></canvas>
+        <div class="demo-watermark">WEB66 COSMOS ENGINE · LIVE DEMO</div>
+        <div class="demo-controls-hint">● Click & Drag Blobs</div>
+      </div>
+    </section>
+
+    <!-- Bento Row 3: Entities & Features Grid -->
+    <section class="bento-grid-three" id="features">
+
+      <!-- Box 1: Entities -->
+      <div class="bento-card">
+        <div class="card-tag">&lt;&gt; // celestial entities</div>
+        <div class="badge-grid" style="grid-template-columns: 1fr;">
+          <div class="tech-badge"><span class="blob-dot dot-gold"></span> Core File (Center Sun)</div>
+          <div class="tech-badge"><span class="blob-dot dot-cyan"></span> Files &amp; Modules (Orbits)</div>
+          <div class="tech-badge"><span class="blob-dot dot-green"></span> Functions (Satellites)</div>
+          <div class="tech-badge"><span class="blob-dot dot-purple"></span> Classes &amp; Blueprints</div>
+          <div class="tech-badge"><span class="blob-dot dot-indigo"></span> Types &amp; Interfaces</div>
+        </div>
+      </div>
+
+      <!-- Box 2: Live Sync -->
+      <div class="bento-card">
+        <div class="card-tag">&sim; // live file watcher</div>
+        <p style="color: var(--text-muted); font-size: 11px; margin-bottom: 12px;">
+          Built-in recursive file watcher triggers automatic re-analysis whenever you edit code.
+        </p>
+        <div class="command-box" style="padding: 8px 10px; font-size: 11px; margin-bottom: 10px;">
+          <span class="cmd-prefix">&#9679;</span>
+          <span style="color: var(--accent-emerald);">LIVE SYNC ACTIVE</span>
+        </div>
+        <p style="color: var(--text-dim); font-size: 11px;">
+          Changes are broadcast instantly over RFC 6455 WebSockets without resetting your camera pan or zoom.
+        </p>
+      </div>
+
+      <!-- Box 3: Technical Specs -->
+      <div class="bento-card" id="cli">
+        <div class="card-tag">^ // technical specs</div>
+        <div class="badge-grid" style="grid-template-columns: 1fr;">
+          <div class="tech-badge"><strong style="color: #fff;">0</strong> External Dependencies</div>
+          <div class="tech-badge"><strong style="color: #fff;">21 KB</strong> Total Package Size</div>
+          <div class="tech-badge"><strong style="color: #fff;">&lt; 10ms</strong> Startup Duration</div>
+          <div class="tech-badge"><strong style="color: #fff;">Universal</strong> TS, JS, Python, JSON</div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div>web66 &middot; crafted by <a href="https://github.com/PRN-6" target="_blank">prinson</a></div>
+      <div>
+        <a href="https://github.com/PRN-6/web66" target="_blank">github repo ↗</a> &nbsp;&middot;&nbsp; 
+        <a href="#home">back to top ↑</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="demo.js"></script>
+  <script>
+    function copyCommand(text, btn) {
+      navigator.clipboard.writeText(text);
+      const label = btn.querySelector('.copy-label');
+      label.textContent = 'copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        label.textContent = 'copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    }
+
+    let userClicks = 0;
+    let totalClicks = 124;
+    function incrementClick() {
+      userClicks++;
+      totalClicks++;
+      document.getElementById('user-clicks').textContent = userClicks;
+      document.getElementById('total-clicks').textContent = totalClicks;
+    }
+  </script>
+</body>
+</html>

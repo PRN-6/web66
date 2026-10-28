@@ -1,5 +1,5 @@
 {
-  "name": "web66-cosmos",
+  "name": "web66",
   "version": "1.0.0",
   "description": "Universal Codebase Intelligence & Cosmic Web Dependency Visualizer",
   "main": "packages/core/engine.js",
@@ -16,6 +16,7 @@
     "start": "node bin/web66.js",
     "web66": "node bin/web66.js",
     "dev": "node bin/web66.js tests/demo-project",
+    "site": "node -e \"const http=require('http'), fs=require('fs'), path=require('path'); http.createServer((q,s)=>{let p=path.join('docs', q.url==='/'?'index.html':q.url); fs.readFile(p,(e,c)=>{const ext=path.extname(p); const ct=ext==='.css'?'text/css':ext==='.js'?'application/javascript':'text/html'; s.writeHead(e?404:200,{'Content-Type':ct}); s.end(e?'404':c)})}).listen(5000,()=>console.log('🚀 Website running at http://localhost:5000'))\"",
     "test": "node tests/test-engine.js"
   },
   "keywords": [
@@ -27,7 +28,7 @@
     "canvas",
     "architecture"
   ],
-  "author": "",
+  "author": "PRN-6",
   "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
