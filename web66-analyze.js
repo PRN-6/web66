@@ -307,7 +307,7 @@ async function main() {
     concurrency: 4
   };
 
-  console.log(`\nWeb68 Standalone Analysis\nProject: ${absolutePath}\n-----------------------------------\n`);
+  console.log(`\nWeb66 Standalone Analysis\nProject: ${absolutePath}\n-----------------------------------\n`);
 
   const startTime = performance.now();
   const engine = new AnalysisEngine(options);

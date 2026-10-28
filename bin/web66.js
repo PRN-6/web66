@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 const path = require('path');
-const { Web68Server } = require('../packages/core/server');
+const { Web66Server } = require('../packages/core/server');
 
 function printHelp() {
   console.log(`
-🌌 Web68 — Universal Codebase Intelligence & Cosmic Visualizer
+🌌 Web66 — Universal Codebase Intelligence & Cosmic Visualizer
 
 Usage:
-  npx web68 [directory] [options]
+  npx web66 [directory] [options]
 
 Arguments:
   [directory]       Target project path to analyze and visualize (default: current directory)
@@ -17,12 +17,12 @@ Options:
   -p, --port <port> Port to run local server and visualizer on (default: 6868)
   --no-open         Do not automatically open the default web browser
   -h, --help        Show this help message
-  -v, --version     Display Web68 version
+  -v, --version     Display Web66 version
 
 Examples:
-  npx web68
-  npx web68 ./src --port 3000
-  npx web68 ../another-app --no-open
+  npx web66
+  npx web66 ./src --port 3000
+  npx web66 ../another-app --no-open
   `);
 }
 
@@ -36,7 +36,7 @@ async function main() {
 
   if (args.includes('-v') || args.includes('--version')) {
     const pkg = require('../package.json');
-    console.log(`Web68 v${pkg.version || '1.0.0'}`);
+    console.log(`Web66 v${pkg.version || '1.0.0'}`);
     process.exit(0);
   }
 
@@ -55,7 +55,7 @@ async function main() {
     }
   }
 
-  const server = new Web68Server({
+  const server = new Web66Server({
     projectPath: path.resolve(process.cwd(), projectPath),
     port: port,
     openBrowser: openBrowser
@@ -64,7 +64,7 @@ async function main() {
   try {
     await server.start();
   } catch (err) {
-    console.error('❌ Failed to start Web68 server:', err.message);
+    console.error('❌ Failed to start Web66 server:', err.message);
     process.exit(1);
   }
 }

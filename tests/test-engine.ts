@@ -1,5 +1,5 @@
-import { AnalysisEngine } from '@web68/core';
-import { TypeScriptAdapter } from '@web68/language-typescript';
+import { AnalysisEngine } from '@web66/core';
+import { TypeScriptAdapter } from '@web66/language-typescript';
 import * as path from 'path';
 
 async function runTest() {

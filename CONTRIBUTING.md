@@ -1,4 +1,4 @@
-# Contributing to Web68
+# Contributing to Web66
 
 Thank you for your interest in contributing! 
 

@@ -1,11 +1,11 @@
 ﻿{
-  "name": "@web68/cli",
+  "name": "@web66/cli",
   "version": "0.0.1",
   "main": "index.ts",
   "types": "index.ts",
   "dependencies": {
-    "@web68/core": "workspace:*",
-    "@web68/language-typescript": "workspace:*",
-    "@web68/language-python": "workspace:*"
+    "@web66/core": "workspace:*",
+    "@web66/language-typescript": "workspace:*",
+    "@web66/language-python": "workspace:*"
   }
 }

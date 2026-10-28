@@ -1,5 +1,5 @@
 import * as path from 'path';
-const { Web68Server } = require('../core/server');
+const { Web66Server } = require('../core/server');
 
 async function main() {
   const args = process.argv.slice(2);
@@ -19,7 +19,7 @@ async function main() {
   }
 
   const absolutePath = path.resolve(process.cwd(), targetDir);
-  const server = new Web68Server({
+  const server = new Web66Server({
     projectPath: absolutePath,
     port: port,
     openBrowser: openBrowser

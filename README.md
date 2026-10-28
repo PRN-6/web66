@@ -1,4 +1,4 @@
-# 🌌 Web68 — Cosmic Codebase Intelligence
+# 🌌 Web66 — Cosmic Codebase Intelligence
 
 > **Google Maps for Source Code.** Transforms any codebase into an explorable cosmic web of organic glowing blobs, with instant auto-scan, zero-config local server, and live sync.
 
@@ -10,13 +10,13 @@ Analyze and explore any local project with a single command:
 
 ```bash
 # Analyze and serve current directory (opens http://localhost:6868)
-npx web68
+npx web66
 
 # Or analyze a specific folder / project on a custom port
-npx web68 ./src --port 3000
+npx web66 ./src --port 3000
 
 # Headless / no auto-open browser
-npx web68 ../my-app --no-open
+npx web66 ../my-app --no-open
 ```
 
 ### Or using npm scripts:
@@ -52,7 +52,7 @@ npm test
 
 ## 🛠️ Architecture
 
-- **`bin/web68.js`**: Executable CLI binary for `npx web68`.
+- **`bin/web66.js`**: Executable CLI binary for `npx web66`.
 - **`packages/core/engine.js`**: AST and symbol extraction engine (TypeScript, JavaScript, Python, JSON).
 - **`packages/core/server.js`**: Zero-external-dependency HTTP server, native RFC 6455 WebSocket streaming, and recursive file watcher.
 - **`packages/viewer/client/`**: Standalone, lightweight cosmic web canvas visualizer.

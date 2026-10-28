@@ -1,5 +1,5 @@
-import { ProjectGraph, GraphNode, GraphEdge } from '@web68/graph-schema';
-import { LanguageAdapter } from '@web68/parser-engine';
+import { ProjectGraph, GraphNode, GraphEdge } from '@web66/graph-schema';
+import { LanguageAdapter } from '@web66/parser-engine';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 

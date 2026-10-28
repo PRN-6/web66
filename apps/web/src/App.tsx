@@ -158,7 +158,7 @@ export default function App() {
   }, [setNodes, setEdges]);
 
   useEffect(() => {
-    // 1. Connect to Web68 Live Server via Native WebSocket or Socket.io
+    // 1. Connect to Web66 Live Server via Native WebSocket or Socket.io
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//localhost:6868`;
     let ws: WebSocket | null = null;
@@ -220,7 +220,7 @@ export default function App() {
         <div className="p-4 border-b border-white/10 flex items-center justify-between">
           <h1 className="text-lg font-extrabold flex items-center gap-2 text-white">
             <Orbit className="text-cyan-400 animate-spin-slow" size={22} />
-            WEB68 <span className="text-cyan-400 font-mono text-xs">COSMOS</span>
+            WEB66 <span className="text-cyan-400 font-mono text-xs">COSMOS</span>
           </h1>
           <span
             className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1.5 ${

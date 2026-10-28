@@ -4,11 +4,11 @@ import { Server } from 'socket.io';
 import chokidar from 'chokidar';
 import path from 'path';
 import { AnalysisEngine } from './index';
-import { TypeScriptAdapter } from '@web68/language-typescript';
-import { PythonAdapter } from '@web68/language-python';
+import { TypeScriptAdapter } from '@web66/language-typescript';
+import { PythonAdapter } from '@web66/language-python';
 
 const PORT = 3001;
-const PROJECT_ROOT = process.env.WEB68_PROJECT_PATH || path.join(process.cwd(), '..', '..', 'tests', 'demo-project');
+const PROJECT_ROOT = process.env.WEB66_PROJECT_PATH || path.join(process.cwd(), '..', '..', 'tests', 'demo-project');
 
 const app = express();
 const httpServer = createServer(app);
@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
 
 httpServer.listen(PORT, () => {
   console.log(`
-🌟 Web68 Live Server running!
+🌟 Web66 Live Server running!
 -----------------------------------
 Watching: ${PROJECT_ROOT}
 Socket:   http://localhost:${PORT}

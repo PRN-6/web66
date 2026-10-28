@@ -1,7 +1,7 @@
 # Architecture Overview
 
 ## System Design
-Web68 follows a modular architecture designed for scalability and maintainability.
+Web66 follows a modular architecture designed for scalability and maintainability.
 
 ## Data Flow
 1. Client Request -> API Layer

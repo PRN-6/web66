@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const { exec } = require('child_process');
 const { AnalysisEngine } = require('./engine');
 
-class Web68Server {
+class Web66Server {
   constructor(options = {}) {
     this.projectPath = path.resolve(options.projectPath || '.');
     this.port = parseInt(options.port || 6868, 10);
@@ -49,7 +49,7 @@ class Web68Server {
       this.httpServer.listen(this.port, () => {
         const url = `http://localhost:${this.port}`;
         console.log(`
-🌌 Web68 Cosmic Intelligence is LIVE!
+🌌 Web66 Cosmic Intelligence is LIVE!
 --------------------------------------------------
 🔭 Target:    ${this.projectPath}
 🌐 Cosmos:    ${url}
@@ -258,4 +258,4 @@ Press Ctrl+C to terminate.
   }
 }
 
-module.exports = { Web68Server };
+module.exports = { Web66Server };

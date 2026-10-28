@@ -1,5 +1,5 @@
 /**
- * Web68 Cosmic Codebase Visualizer
+ * Web66 Cosmic Codebase Visualizer
  * Radial Web & Organic Blob Engine with Live WebSocket Sync
  */
 
