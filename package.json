@@ -1,14 +1,28 @@
 {
   "name": "web68",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "Universal Codebase Intelligence & Cosmic Web Dependency Visualizer",
+  "main": "packages/core/engine.js",
+  "bin": {
+    "web68": "./bin/web68.js"
   },
-  "keywords": [],
+  "scripts": {
+    "start": "node bin/web68.js",
+    "web68": "node bin/web68.js",
+    "dev": "node bin/web68.js tests/demo-project",
+    "test": "node tests/test-engine.js"
+  },
+  "keywords": [
+    "codebase",
+    "ast",
+    "dependency-graph",
+    "visualization",
+    "react-flow",
+    "canvas",
+    "architecture"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
     "@types/node": "^26.6.5",

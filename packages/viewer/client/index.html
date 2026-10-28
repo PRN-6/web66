@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web68 — Cosmic Codebase Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <!-- Deep Space Canvas -->
+  <canvas id="galaxy-canvas"></canvas>
+
+  <!-- Top HUD Bar -->
+  <header class="hud-header glass-panel">
+    <div class="brand">
+      <div class="brand-orb">
+        <span class="orb-core"></span>
+        <span class="orb-ring"></span>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">WEB68 <span class="badge-accent">COSMOS</span></div>
+        <div class="brand-sub" id="project-path-display">Scanning workspace...</div>
+      </div>
+    </div>
+
+    <div class="hud-center">
+      <div class="search-box glass-panel-sub">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="node-search" placeholder="Search files, functions, classes..." autocomplete="off">
+        <span class="search-shortcut">⌘K</span>
+      </div>
+
+      <div class="filter-pills">
+        <button class="pill active" data-filter="all">All</button>
+        <button class="pill" data-filter="File"><span class="dot dot-file"></span>Files</button>
+        <button class="pill" data-filter="Function"><span class="dot dot-function"></span>Functions</button>
+        <button class="pill" data-filter="Class"><span class="dot dot-class"></span>Classes</button>
+        <button class="pill" data-filter="Type"><span class="dot dot-type"></span>Types</button>
+      </div>
+    </div>
+
+    <div class="hud-right">
+      <div class="status-pill glass-panel-sub" id="status-pill">
+        <span class="status-beacon"></span>
+        <span class="status-text" id="status-text">CONNECTING...</span>
+      </div>
+
+      <div class="stats-badge glass-panel-sub">
+        <span id="node-count">0</span> nodes <span class="divider">•</span> <span id="edge-count">0</span> edges
+      </div>
+    </div>
+  </header>
+
+  <!-- Floating Canvas Controls -->
+  <aside class="floating-controls glass-panel">
+    <button class="control-btn" id="btn-zoom-in" title="Zoom In (+)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    </button>
+    <button class="control-btn" id="btn-zoom-out" title="Zoom Out (-)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    </button>
+    <button class="control-btn" id="btn-center" title="Center Core Node">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+    </button>
+    <button class="control-btn" id="btn-layout" title="Toggle Layout: Radial Web / Organic Physics">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+    </button>
+    <button class="control-btn" id="btn-particles" title="Toggle Energy Particles">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+    </button>
+  </aside>
+
+  <!-- Legend in bottom left -->
+  <div class="legend-panel glass-panel">
+    <div class="legend-title">COSMIC ENTITIES</div>
+    <div class="legend-items">
+      <div class="legend-item"><span class="blob-sample sample-root"></span> Core / Entry File</div>
+      <div class="legend-item"><span class="blob-sample sample-file"></span> File / Module</div>
+      <div class="legend-item"><span class="blob-sample sample-func"></span> Function</div>
+      <div class="legend-item"><span class="blob-sample sample-class"></span> Class</div>
+      <div class="legend-item"><span class="blob-sample sample-type"></span> Type / Interface</div>
+    </div>
+  </div>
+
+  <!-- Inspector Drawer (Right Side) -->
+  <aside class="inspector-drawer glass-panel" id="inspector-drawer">
+    <div class="inspector-header">
+      <div class="inspector-badge" id="inspector-type">NODE INSPECTOR</div>
+      <button class="close-btn" id="inspector-close">×</button>
+    </div>
+    <div class="inspector-body" id="inspector-content">
+      <div class="empty-state">
+        <div class="empty-icon">🪐</div>
+        <div class="empty-text">Select any blob in the cosmic web to inspect its architectural connections and symbols.</div>
+      </div>
+    </div>
+  </aside>
+
+  <script src="/app.js"></script>
+</body>
+</html>

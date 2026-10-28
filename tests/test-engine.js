@@ -1,22 +1,27 @@
-import { AnalysisEngine } from '@web68/core';
-import { TypeScriptAdapter } from '@web68/language-typescript';
-import * as path from 'path';
+const { AnalysisEngine } = require('../packages/core/engine');
+const path = require('path');
+
 async function runTest() {
-    const rootPath = path.join(process.cwd(), 'tests/fixtures');
-    const engine = new AnalysisEngine({
-        rootPath: rootPath,
-        ignorePatterns: ['node_modules'],
-        adapters: [new TypeScriptAdapter()],
-    });
-    console.log('Analyzing project...');
-    const graph = await engine.analyze();
-    console.log('Nodes found:', graph.nodes.size);
-    for (const [id, node] of graph.nodes) {
-        console.log(`Node: ${id} [${node.type}] - ${node.label}`);
-    }
-    console.log('Edges found:', graph.edges.size);
-    for (const [id, edge] of graph.edges) {
-        console.log(`Edge: ${id} (${edge.type}) ${edge.source} -> ${edge.target}`);
-    }
+  const rootPath = path.join(__dirname, 'demo-project');
+  console.log('Testing AnalysisEngine on:', rootPath);
+
+  const engine = new AnalysisEngine({
+    rootPath: rootPath,
+    ignorePatterns: ['node_modules']
+  });
+
+  const graph = await engine.analyze();
+  console.log(`✅ Discovered ${graph.nodes.length} nodes and ${graph.edges.length} edges.`);
+  console.log(`🌟 Root Entry: ${graph.metadata.rootNodeId}`);
+
+  if (graph.nodes.length < 3) {
+    throw new Error('Expected at least 3 nodes in demo project');
+  }
+
+  console.log('🎉 Test passed successfully!');
 }
-runTest().catch(console.error);
+
+runTest().catch((err) => {
+  console.error('❌ Test failed:', err);
+  process.exit(1);
+});

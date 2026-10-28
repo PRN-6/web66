@@ -1,38 +1,34 @@
-import { AnalysisEngine, AnalysisOptions } from '@web68/core';
-import { TypeScriptAdapter } from '@web68/language-typescript';
-import { PythonAdapter } from '@web68/language-python';
-import * as fs from 'fs/promises';
 import * as path from 'path';
+const { Web68Server } = require('../core/server');
 
 async function main() {
   const args = process.argv.slice(2);
-  const targetDir = args[0] || '.';
-  const outputPath = args[1] || 'graph.json';
+  let targetDir = '.';
+  let port = 6868;
+  let openBrowser = true;
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (arg === '-p' || arg === '--port') {
+      port = parseInt(args[++i], 10) || 6868;
+    } else if (arg === '--no-open') {
+      openBrowser = false;
+    } else if (!arg.startsWith('-')) {
+      targetDir = arg;
+    }
+  }
 
   const absolutePath = path.resolve(process.cwd(), targetDir);
-
-  console.log(`🚀 Web68 Analyzing: ${absolutePath}...`);
-
-  const engine = new AnalysisEngine({
-    rootPath: absolutePath,
-    ignorePatterns: ['node_modules', '.git', 'dist', 'build'],
-    adapters: [new TypeScriptAdapter(), new PythonAdapter()],
+  const server = new Web68Server({
+    projectPath: absolutePath,
+    port: port,
+    openBrowser: openBrowser
   });
 
-  const graph = await engine.analyze();
-
-  const output = {
-    metadata: graph.metadata,
-    nodes: Array.from(graph.nodes.values()),
-    edges: Array.from(graph.edges.values()),
-  };
-
-  await fs.writeFile(outputPath, JSON.stringify(output, null, 2));
-  console.log(`✅ Analysis complete! Graph saved to: ${outputPath}`);
-  console.log(`📊 Summary: ${output.nodes.length} nodes, ${output.edges.length} edges.`);
+  await server.start();
 }
 
 main().catch(err => {
-  console.error('❌ Analysis failed:', err);
+  console.error('❌ Server failed:', err);
   process.exit(1);
 });
