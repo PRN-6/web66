@@ -1,15 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" class="min-h-full bg-black">
+<html lang="en" class="scroll-smooth bg-black text-[#8c8c8c]">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>web66 · Universal Codebase Intelligence</title>
-  <meta name="description" content="Google Maps for Source Code. Transforms any codebase into an explorable cosmic web of organic glowing blobs.">
+  <title>Web66 — Universal Codebase Intelligence & Cosmic Web</title>
+  <meta name="description" content="Google Maps for Source Code. Zero-config CLI that transforms any codebase into an explorable cosmic galaxy of organic glowing blobs with real-time live sync.">
   
+  <!-- Open Graph -->
+  <meta property="og:title" content="Web66 — Cosmic Source Code Intelligence">
+  <meta property="og:description" content="Turn your code into an explorable universe. 100% private, zero dependencies, instant npx run.">
+  <meta property="og:url" content="https://prn-6.github.io/web66">
+  <meta property="og:type" content="website">
+
   <!-- Fonts: Silkscreen (Pixel) + JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -20,6 +26,14 @@
           fontFamily: {
             mono: ['"JetBrains Mono"', 'monospace'],
             pixel: ['"Silkscreen"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              gold: '#fbbf24',
+              cyan: '#38bdf8',
+              emerald: '#34d399',
+              purple: '#c084fc',
+            }
           }
         }
       }
@@ -29,261 +43,717 @@
   <style>
     body {
       background-color: #000000;
-      color: #888888;
+      color: #8c8c8c;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      line-height: 1.6;
+      overflow-x: hidden;
     }
-    .bento-card {
-      background-color: #080808;
-      border: 1px solid #181818;
-      border-radius: 12px;
-      transition: border-color 0.2s ease;
+    .card-dark {
+      background-color: #050505;
+      border: 1px solid #141414;
+      border-radius: 8px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .bento-card:hover {
-      border-color: #282828;
+    .card-dark:hover {
+      border-color: #242424;
     }
-    .retro-btn {
-      background-color: #111111;
-      border: 1px solid #222222;
+    .code-box {
+      background-color: #020202;
+      border: 1px solid #171717;
       border-radius: 6px;
-      color: #b5b5b5;
-      font-size: 12px;
-      padding: 8px 16px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.15s ease;
-      cursor: pointer;
-      text-decoration: none;
     }
-    .retro-btn:hover {
-      background-color: #1a1a1a;
-      border-color: #383838;
-      color: #ffffff;
+    .glow-dot {
+      box-shadow: 0 0 10px currentColor;
     }
-    .tech-pill {
-      background-color: #0d0d0d;
-      border: 1px solid #1a1a1a;
-      border-radius: 6px;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 12px;
-      color: #cccccc;
-      transition: all 0.15s ease;
+    .glow-emerald {
+      box-shadow: 0 0 16px rgba(52, 211, 153, 0.35);
     }
-    .tech-pill:hover {
-      background-color: #141414;
-      border-color: #303030;
-      color: #ffffff;
+    .glow-gold {
+      box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+    }
+    /* Pixel Grid Background */
+    .bg-grid {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #000000;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1c1c1c;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #333333;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-6 sm:p-10 max-w-[1140px] mx-auto selection:bg-neutral-800 selection:text-white">
+<body class="selection:bg-emerald-950 selection:text-emerald-300 relative bg-grid">
 
-  <!-- Top Simple Monospace Navbar -->
-  <header class="w-full text-center pb-6">
-    <nav class="inline-flex items-center gap-6 text-xs text-[#555555]">
-      <a href="#" class="text-white font-medium">home</a>
-      <span>·</span>
-      <a href="#about" class="hover:text-white transition-colors">about</a>
-      <span>·</span>
-      <a href="#capabilities" class="hover:text-white transition-colors">capabilities</a>
-      <span>·</span>
-      <a href="https://github.com/PRN-6/web66" target="_blank" class="hover:text-white transition-colors">github ↗</a>
-      <span>·</span>
-      <a href="#demo" class="hover:text-white transition-colors">live demo</a>
-    </nav>
+  <!-- ========================================== -->
+  <!-- 1. TOP STICKY NAVBAR                      -->
+  <!-- ========================================== -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-black/85 border-b border-[#141414]">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <span class="w-3 h-3 rounded-full bg-emerald-400 glow-dot group-hover:scale-125 transition-transform"></span>
+        <span class="font-pixel text-xl text-white tracking-widest group-hover:text-emerald-400 transition-colors">web66</span>
+        <span class="text-[10px] font-mono bg-[#0c0c0c] border border-[#1f1f1f] px-2 py-0.5 rounded text-neutral-400">v1.0.0</span>
+      </a>
+
+      <!-- Center Navigation Links -->
+      <nav class="hidden md:flex items-center gap-7 text-xs text-[#777777]">
+        <a href="#demo" class="hover:text-white transition-colors">Live Demo</a>
+        <a href="#features" class="hover:text-white transition-colors">Features</a>
+        <a href="#install" class="hover:text-white transition-colors">Install</a>
+        <a href="#workflow" class="hover:text-white transition-colors">How It Works</a>
+        <a href="#specs" class="hover:text-white transition-colors">Architecture</a>
+        <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+      </nav>
+
+      <!-- Right Action CTA Buttons -->
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/PRN-6/web66" target="_blank" class="hidden sm:flex items-center gap-2 text-xs text-neutral-300 hover:text-white bg-[#0a0a0a] hover:bg-[#141414] border border-[#222222] px-3.5 py-1.5 rounded transition-all">
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>Star on GitHub</span>
+        </a>
+
+        <a href="#install" class="flex items-center gap-1.5 text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-1.5 rounded transition-all shadow-sm glow-emerald">
+          <span>Get Started</span>
+          <span>&darr;</span>
+        </a>
+      </div>
+    </div>
   </header>
 
-  <!-- Bento Grid Main Container (Matching Reference Image) -->
-  <main class="w-full my-auto grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+  <!-- ========================================== -->
+  <!-- 2. HERO SECTION                           -->
+  <!-- ========================================== -->
+  <section class="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center flex flex-col items-center">
     
-    <!-- LEFT COLUMN: Tall Bento Card (lg:col-span-5) -->
-    <aside class="lg:col-span-5 bento-card p-6 sm:p-7 flex flex-col justify-between">
+    <!-- Announcement Pill -->
+    <a href="https://github.com/PRN-6/web66" target="_blank" class="group inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#080808] border border-[#1c1c1c] hover:border-emerald-500/50 text-xs text-[#888888] mb-8 transition-colors">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 glow-dot animate-pulse"></span>
+      <span class="text-white font-medium">Web66 v1.0 Released</span>
+      <span class="text-[#444444]">&middot;</span>
+      <span class="text-neutral-400 group-hover:text-emerald-400 transition-colors">Instant single-command code visualization &rarr;</span>
+    </a>
+
+    <!-- Big Pixel Title (Styled like OMARCHY) -->
+    <h1 class="font-pixel text-5xl sm:text-7xl md:text-8xl text-white tracking-widest leading-none mb-6">
+      WEB66
+    </h1>
+
+    <!-- Headline Tagline -->
+    <p class="font-mono text-lg sm:text-xl text-neutral-300 font-medium tracking-wide mb-4">
+      Google Maps for Your Source Code
+    </p>
+
+    <!-- Subtitle description -->
+    <p class="text-sm sm:text-base text-[#777777] max-w-2xl mx-auto leading-relaxed mb-8">
+      Web66 transforms any software repository into an explorable cosmic galaxy of glowing celestial blobs. Multi-language AST analysis, native RFC 6455 live sync, and zero dependencies.
+    </p>
+
+    <!-- Dual Action Buttons -->
+    <div class="flex flex-wrap items-center justify-center gap-4 mb-8">
+      <a href="#install" class="flex items-center gap-2 px-5 py-2.5 rounded bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition-all shadow-lg glow-emerald">
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        <span>Install Web66</span>
+      </a>
+
+      <a href="#demo" class="flex items-center gap-2 px-5 py-2.5 rounded bg-[#0a0a0a] hover:bg-[#141414] border border-[#222222] hover:border-[#333333] text-xs font-semibold text-white transition-all">
+        <span>▶</span>
+        <span>Explore Live Cosmos Demo</span>
+      </a>
+    </div>
+
+    <!-- Terminal Command Snippet Box -->
+    <div class="w-full max-w-xl mb-4">
+      <div class="code-box p-3.5 flex items-center justify-between gap-3 text-left">
+        <div class="flex items-center gap-3 overflow-hidden">
+          <span class="text-emerald-400 font-mono select-none">&gt;</span>
+          <code class="text-xs sm:text-sm font-mono text-white select-all truncate" id="cmd-hero">npx github:PRN-6/web66</code>
+        </div>
+        <button onclick="copyCommand('cmd-hero', this)" class="px-3 py-1.5 bg-[#0e0e0e] hover:bg-[#1a1a1a] border border-[#262626] text-xs font-mono text-neutral-300 hover:text-white rounded transition-colors shrink-0">
+          copy
+        </button>
+      </div>
+      <div class="text-[11px] text-[#555555] mt-2 font-mono flex items-center justify-center gap-2">
+        <span>⚡ Run directly in any project folder. No global installation needed.</span>
+      </div>
+    </div>
+
+    <!-- Quick Badges Row -->
+    <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-[#666666] pt-6 border-t border-[#141414] w-full max-w-2xl mt-4">
+      <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span class="text-white font-semibold">0</span> dependencies</div>
+      <span class="text-[#333333]">&middot;</span>
+      <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span><span class="text-white font-semibold">21 KB</span> package</div>
+      <span class="text-[#333333]">&middot;</span>
+      <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span><span class="text-white font-semibold">&lt; 10ms</span> cold scan</div>
+      <span class="text-[#333333]">&middot;</span>
+      <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span><span class="text-white font-semibold">TS / JS / Python</span></div>
+    </div>
+
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 3. LIVE INTERACTIVE COSMOS WINDOW         -->
+  <!-- ========================================== -->
+  <section class="max-w-5xl mx-auto px-6 mb-24 w-full" id="demo">
+    
+    <!-- Section Title -->
+    <div class="mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
       <div>
-        <!-- Framed Preview Box (Interactive Cosmic Canvas) -->
-        <div class="w-full aspect-square rounded-lg border border-[#1f1f1f] bg-black overflow-hidden relative mb-6">
-          <canvas id="demo-canvas" class="w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
-          <div class="absolute bottom-2.5 left-2.5 text-[9px] font-mono text-[#555555] bg-black/80 px-2 py-0.5 rounded border border-[#1a1a1a] pointer-events-none">
-            [ LIVE COSMOS · DRAG BLOBS ]
-          </div>
-        </div>
-
-        <!-- Title -->
-        <h1 class="font-pixel text-3xl sm:text-4xl text-white tracking-widest mb-1">
-          web66
-        </h1>
-        <div class="text-[11px] text-[#888888] mb-1">
-          # Universal Codebase Intelligence
-        </div>
-        <div class="text-[11px] text-[#555555] mb-4">
-          AST Parser &middot; Dependency Mapper &middot; Live Sync
-        </div>
-
-        <!-- Quote / Description -->
-        <div class="text-xs text-[#666666] italic leading-relaxed border-l-2 border-[#1f1f1f] pl-3 my-4">
-          "Google Maps for source code. Transforming software repositories into an explorable cosmic web of glowing nodes."
-        </div>
+        <div class="text-xs text-[#555555] mb-1 font-mono">&gt;_ // interactive playground</div>
+        <h2 class="font-pixel text-2xl text-white tracking-wide">COSMIC VISUALIZER RUNTIME</h2>
       </div>
-
-      <!-- Bottom Links (Matching Reference Image) -->
-      <div class="pt-6 border-t border-[#141414] flex flex-wrap items-center justify-between gap-y-2 text-xs">
-        <a href="https://github.com/PRN-6/web66" target="_blank" class="text-[#888888] hover:text-white transition-colors">github ↗</a>
-        <a href="https://github.com/PRN-6" target="_blank" class="text-[#888888] hover:text-white transition-colors">author (PRN-6) ↗</a>
-        <a href="mailto:prinsonnazareth2@gmail.com" class="text-[#888888] hover:text-white transition-colors">email ↗</a>
-        <a href="https://x.com" target="_blank" class="text-[#888888] hover:text-white transition-colors">x ↗</a>
+      <div class="text-xs text-[#666666] font-mono">
+        Try clicking &amp; dragging celestial nodes below
       </div>
-    </aside>
+    </div>
 
-    <!-- RIGHT COLUMN: Two Stacked Bento Cards (lg:col-span-7) -->
-    <div class="lg:col-span-7 flex flex-col gap-5 justify-between">
+    <!-- App Window Frame -->
+    <div class="card-dark overflow-hidden shadow-2xl relative">
       
-      <!-- Top Right Card: >_ // about web66 -->
-      <section class="bento-card p-6 sm:p-7 flex flex-col justify-between" id="about">
-        <div>
-          <!-- Tag Header -->
-          <div class="text-xs text-[#555555] mb-4">
-            &gt;_ // about web66
-          </div>
-
-          <!-- Main Intro Paragraph -->
-          <p class="text-sm text-white font-medium mb-3 leading-relaxed">
-            An ultra-low latency, zero-dependency codebase intelligence engine that transforms complex code into an interactive cosmic graph.
-          </p>
-
-          <p class="text-xs text-[#888888] leading-relaxed mb-6">
-            Scans files, classes, functions, and imports in milliseconds. Runs a local HTTP + WebSocket server with instant file-watching live sync, keeping your architectural view up to date as you code.
-          </p>
-
-          <!-- Action Buttons (Matching resume.pdf & buy me chai) -->
-          <div class="flex flex-wrap gap-3 mb-6">
-            <button onclick="copyCommand(this)" class="retro-btn">
-              <span class="text-emerald-400">&gt;</span>
-              <span id="cmd-btn-text">npx github:PRN-6/web66</span>
-              <span class="text-[#555555]">📋</span>
-            </button>
-            <a href="https://github.com/PRN-6/web66" target="_blank" class="retro-btn">
-              <span>⭐ star on github ↗</span>
-            </a>
-          </div>
+      <!-- Window Titlebar -->
+      <div class="h-11 bg-[#090909] border-b border-[#141414] px-4 flex items-center justify-between text-xs text-[#666666]">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-[#262626]"></span>
+          <span class="w-3 h-3 rounded-full bg-[#262626]"></span>
+          <span class="w-3 h-3 rounded-full bg-[#262626]"></span>
+          <span class="ml-2 font-mono text-white text-xs">localhost:6868 — web66 cosmic viewer</span>
         </div>
-
-        <!-- Click Counter Widget (Matching Reference Image) -->
+        
         <div class="flex items-center gap-3">
-          <button onclick="clickCounter()" class="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-[#0d0d0d] border border-[#1c1c1c] hover:border-[#333333] text-xs transition-colors">
-            <span class="text-white font-semibold">click me )</span>
-            <span class="text-emerald-400 font-bold" id="total-clicks">108</span>
+          <span class="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 glow-dot animate-pulse"></span>
+            <span>WebSocket Live Sync: 0ms ping</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Canvas Toolbar & Preset Selector -->
+      <div class="bg-[#050505] border-b border-[#141414] px-4 py-2 flex flex-wrap items-center justify-between gap-3 text-xs">
+        
+        <!-- Preset Topology Buttons -->
+        <div class="flex items-center gap-1">
+          <span class="text-[11px] text-[#555555] mr-1 hidden sm:inline">Codebase:</span>
+          <button data-preset="web66" class="px-2.5 py-1 rounded text-xs font-mono border transition-colors bg-neutral-800 text-white border-neutral-600">
+            Web66 Core
           </button>
-          <span class="text-xs text-[#555555]">you : <span class="text-white font-mono" id="your-clicks">0</span></span>
-        </div>
-      </section>
-
-      <!-- Bottom Right Card: <> // stack & capabilities -->
-      <section class="bento-card p-6 sm:p-7" id="capabilities">
-        <!-- Tag Header -->
-        <div class="text-xs text-[#555555] mb-4">
-          &lt;&gt; // stack &amp; capabilities
+          <button data-preset="nextjs" class="px-2.5 py-1 rounded text-xs font-mono border border-transparent text-[#777777] hover:text-white transition-colors">
+            Next.js App
+          </button>
+          <button data-preset="aiagent" class="px-2.5 py-1 rounded text-xs font-mono border border-transparent text-[#777777] hover:text-white transition-colors">
+            AI Agent Stack
+          </button>
         </div>
 
-        <!-- 3-Column Pill Grid (Matching Tech Stack Grid) -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-          
-          <div class="tech-pill">
-            <span class="text-amber-400">●</span>
-            <span>TypeScript</span>
-          </div>
-
-          <div class="tech-pill">
-            <span class="text-sky-400">●</span>
-            <span>JavaScript</span>
-          </div>
-
-          <div class="tech-pill">
-            <span class="text-emerald-400">●</span>
-            <span>Python</span>
-          </div>
-
-          <div class="tech-pill">
-            <span class="text-purple-400">●</span>
-            <span>AST Engine</span>
-          </div>
-
-          <div class="tech-pill">
-            <span class="text-teal-400">●</span>
-            <span>WebSockets</span>
-          </div>
-
-          <div class="tech-pill">
-            <span class="text-indigo-400">●</span>
-            <span>Live Sync</span>
-          </div>
-
-          <div class="tech-pill">
-            <span class="text-yellow-400">●</span>
-            <span>0 Deps</span>
-          </div>
-
-          <div class="tech-pill">
-            <span class="text-rose-400">●</span>
-            <span>21 KB Size</span>
-          </div>
-
-          <div class="tech-pill">
-            <span class="text-blue-400">●</span>
-            <span>CLI Runner</span>
-          </div>
-
-          <div class="tech-pill">
-            <span class="text-cyan-400">●</span>
-            <span>Radial Web</span>
-          </div>
-
-          <div class="tech-pill">
-            <span class="text-pink-400">●</span>
-            <span>Cosmic Blobs</span>
-          </div>
-
-          <div class="tech-pill">
-            <span class="text-green-400">●</span>
-            <span>GitHub Free</span>
-          </div>
-
+        <!-- Controls (Rotate, Orbits, Reset) -->
+        <div class="flex items-center gap-2 text-xs">
+          <button id="btn-toggle-rotate" class="px-2.5 py-1 rounded bg-[#0a0a0a] border border-[#1e1e1e] hover:border-[#333333] text-emerald-400 transition-colors">
+            Auto-Rotate
+          </button>
+          <button id="btn-toggle-orbits" class="px-2.5 py-1 rounded bg-[#0a0a0a] border border-[#1e1e1e] hover:border-[#333333] text-emerald-400 transition-colors">
+            Orbits
+          </button>
+          <button id="btn-reset-canvas" class="px-2.5 py-1 rounded bg-[#0a0a0a] border border-[#1e1e1e] hover:border-[#333333] text-[#777777] hover:text-white transition-colors">
+            Reset
+          </button>
         </div>
-      </section>
+
+      </div>
+
+      <!-- Canvas Area -->
+      <div class="relative w-full h-[480px] bg-black overflow-hidden select-none">
+        <canvas id="demo-canvas" class="w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
+        
+        <!-- Legend Overlay at Bottom Left -->
+        <div class="absolute bottom-4 left-4 bg-black/85 backdrop-blur border border-[#1a1a1a] rounded px-3 py-2 text-[10px] font-mono text-[#777777] flex flex-wrap items-center gap-4 pointer-events-none">
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> Core Entry</span>
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span> Source Files</span>
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Functions</span>
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span> Classes / Types</span>
+        </div>
+
+        <!-- Top Right Stats Indicator -->
+        <div class="absolute top-4 right-4 bg-black/85 backdrop-blur border border-[#1a1a1a] rounded px-3 py-1.5 text-[11px] font-mono text-[#888888] pointer-events-none">
+          <span id="canvas-stats">14 symbols · 18 links · Root: bin/web66.js</span>
+        </div>
+
+        <!-- Clickable Node Inspector Drawer (Floating overlay) -->
+        <div id="node-inspector" class="hidden absolute top-4 left-4 w-72 bg-[#080808]/95 backdrop-blur-md border border-[#242424] rounded-lg p-4 shadow-2xl transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span id="inspect-type" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">ROOT</span>
+            <button id="btn-close-inspect" class="text-neutral-500 hover:text-white font-mono text-xs">&times;</button>
+          </div>
+          <h4 id="inspect-title" class="font-bold text-white text-sm mb-1 font-mono truncate">bin/web66.js</h4>
+          <p id="inspect-desc" class="text-xs text-[#888888] leading-relaxed mb-3">CLI Launcher &amp; arguments handler.</p>
+          <div id="inspect-deps" class="p-2.5 bg-[#020202] border border-[#161616] rounded text-xs space-y-1">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 4. BENTO FEATURE GRID                     -->
+  <!-- ========================================== -->
+  <section class="max-w-5xl mx-auto px-6 mb-24 w-full" id="features">
+    
+    <div class="mb-10 text-left">
+      <div class="text-xs text-[#555555] mb-2 font-mono">&gt;_ // architectural intelligence</div>
+      <h2 class="font-pixel text-2xl sm:text-3xl text-white tracking-wide">DESIGNED FOR SPEED &amp; CLARITY</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      
+      <!-- Card 1: Supermassive Root -->
+      <div class="card-dark p-6 flex flex-col justify-between">
+        <div>
+          <div class="w-10 h-10 rounded-lg bg-[#0a0a0a] border border-[#1c1c1c] flex items-center justify-center text-amber-400 mb-4 font-mono text-lg">
+            ☀️
+          </div>
+          <h3 class="text-base font-bold text-white mb-2 font-mono">Gravitational Core Detection</h3>
+          <p class="text-xs text-[#777777] leading-relaxed">
+            Web66 calculates degree centrality across your entire graph. Major entry points (<code class="text-neutral-300">main.ts</code>, <code class="text-neutral-300">index.js</code>, <code class="text-neutral-300">app.py</code>) become supermassive gravitational centers.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-[#121212] text-[11px] text-[#555555] font-mono">
+          ✓ No manual configuration required
+        </div>
+      </div>
+
+      <!-- Card 2: Concentric Orbits -->
+      <div class="card-dark p-6 flex flex-col justify-between">
+        <div>
+          <div class="w-10 h-10 rounded-lg bg-[#0a0a0a] border border-[#1c1c1c] flex items-center justify-center text-sky-400 mb-4 font-mono text-lg">
+            🪐
+          </div>
+          <h3 class="text-base font-bold text-white mb-2 font-mono">Multi-Tier Planetary Orbits</h3>
+          <p class="text-xs text-[#777777] leading-relaxed">
+            Files distribute cleanly onto concentric radial orbits. Child functions and exported classes orbit their parent file nodes as satellite moons with fluid spring dampening.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-[#121212] text-[11px] text-[#555555] font-mono">
+          ✓ Dynamic spacing scales to 1,000+ files
+        </div>
+      </div>
+
+      <!-- Card 3: WebSocket Live Sync -->
+      <div class="card-dark p-6 flex flex-col justify-between">
+        <div>
+          <div class="w-10 h-10 rounded-lg bg-[#0a0a0a] border border-[#1c1c1c] flex items-center justify-center text-emerald-400 mb-4 font-mono text-lg">
+            ⚡
+          </div>
+          <h3 class="text-base font-bold text-white mb-2 font-mono">Native RFC 6455 Live Sync</h3>
+          <p class="text-xs text-[#777777] leading-relaxed">
+            Built-in recursive file watcher detects filesystem changes instantly, re-analyzes AST tokens in &lt;10ms, and pushes hot updates over WebSockets without resetting camera zoom.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-[#121212] text-[11px] text-[#555555] font-mono">
+          ✓ Zero page refreshes needed
+        </div>
+      </div>
+
+      <!-- Card 4: Wide Card: Multi-Language Engine -->
+      <div class="card-dark p-6 md:col-span-2 flex flex-col justify-between">
+        <div>
+          <div class="text-xs text-[#555555] mb-2 font-mono">&lt;&gt; // multi-language ast engine</div>
+          <h3 class="text-lg font-bold text-white mb-2 font-mono">Deep Symbol Extraction Across Stacks</h3>
+          <p class="text-xs text-[#777777] leading-relaxed mb-5">
+            Web66 doesn't stop at file-level imports. Its AST engine dives into functions, classes, interfaces, and methods across modern programming languages:
+          </p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs font-mono">
+            <div class="p-3 bg-[#020202] border border-[#161616] rounded text-white flex flex-col items-center gap-1">
+              <span class="text-sky-400 font-bold">TypeScript</span>
+              <span class="text-[10px] text-[#555555]">.ts / .tsx</span>
+            </div>
+            <div class="p-3 bg-[#020202] border border-[#161616] rounded text-white flex flex-col items-center gap-1">
+              <span class="text-amber-400 font-bold">JavaScript</span>
+              <span class="text-[10px] text-[#555555]">.js / .mjs / .jsx</span>
+            </div>
+            <div class="p-3 bg-[#020202] border border-[#161616] rounded text-white flex flex-col items-center gap-1">
+              <span class="text-emerald-400 font-bold">Python</span>
+              <span class="text-[10px] text-[#555555]">.py / def / class</span>
+            </div>
+            <div class="p-3 bg-[#020202] border border-[#161616] rounded text-white flex flex-col items-center gap-1">
+              <span class="text-purple-400 font-bold">Config / JSON</span>
+              <span class="text-[10px] text-[#555555]">package.json</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5: Zero Dependencies Footprint -->
+      <div class="card-dark p-6 flex flex-col justify-between">
+        <div>
+          <div class="text-xs text-[#555555] mb-2 font-mono">^ // footprint</div>
+          <h3 class="text-lg font-bold text-white mb-2 font-mono">Zero Dependencies</h3>
+          <p class="text-xs text-[#777777] leading-relaxed mb-4">
+            Engineered exclusively with Node.js built-in standard modules (<code class="text-neutral-400">http</code>, <code class="text-neutral-400">crypto</code>, <code class="text-neutral-400">fs</code>, <code class="text-neutral-400">path</code>).
+          </p>
+          <div class="p-3 bg-[#020202] border border-[#161616] rounded text-center">
+            <div class="text-2xl font-bold text-white font-mono">21 KB</div>
+            <div class="text-[10px] text-[#555555]">Zero bloated node_modules</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 5. INSTALLATION & CLI WORKFLOW            -->
+  <!-- ========================================== -->
+  <section class="max-w-5xl mx-auto px-6 mb-24 w-full" id="install">
+    
+    <div class="mb-10 text-left">
+      <div class="text-xs text-[#555555] mb-2 font-mono">&gt;_ // get started</div>
+      <h2 class="font-pixel text-2xl sm:text-3xl text-white tracking-wide">INSTALLATION &amp; USAGE</h2>
+    </div>
+
+    <!-- Package Manager Tabs -->
+    <div class="card-dark p-6 mb-8">
+      <div class="flex items-center gap-2 border-b border-[#141414] pb-4 mb-5 text-xs font-mono">
+        <span class="text-[#555555] mr-2">Package Manager:</span>
+        <button onclick="switchTab('npx')" id="tab-npx" class="px-3 py-1 bg-neutral-800 text-white rounded border border-neutral-600">npx (Direct)</button>
+        <button onclick="switchTab('npm')" id="tab-npm" class="px-3 py-1 text-[#777777] hover:text-white rounded border border-transparent">npm global</button>
+        <button onclick="switchTab('pnpm')" id="tab-pnpm" class="px-3 py-1 text-[#777777] hover:text-white rounded border border-transparent">pnpm dlx</button>
+        <button onclick="switchTab('bun')" id="tab-bun" class="px-3 py-1 text-[#777777] hover:text-white rounded border border-transparent">bunx</button>
+      </div>
+
+      <!-- Tab 1: npx -->
+      <div id="content-npx" class="space-y-3">
+        <p class="text-xs text-[#888888]">Run directly in any directory without installing or altering package.json:</p>
+        <div class="code-box p-3.5 flex items-center justify-between gap-3 text-left">
+          <code class="text-xs sm:text-sm font-mono text-emerald-300 select-all" id="cmd-tab-npx">npx github:PRN-6/web66</code>
+          <button onclick="copyCommand('cmd-tab-npx', this)" class="px-3 py-1.5 bg-[#0e0e0e] hover:bg-[#1a1a1a] border border-[#262626] text-xs font-mono text-neutral-300 rounded transition-colors shrink-0">copy</button>
+        </div>
+      </div>
+
+      <!-- Tab 2: npm global -->
+      <div id="content-npm" class="space-y-3 hidden">
+        <p class="text-xs text-[#888888]">Install globally to have the <code class="text-white">web66</code> binary permanently in your terminal PATH:</p>
+        <div class="code-box p-3.5 flex items-center justify-between gap-3 text-left">
+          <code class="text-xs sm:text-sm font-mono text-emerald-300 select-all" id="cmd-tab-npm">npm install -g github:PRN-6/web66</code>
+          <button onclick="copyCommand('cmd-tab-npm', this)" class="px-3 py-1.5 bg-[#0e0e0e] hover:bg-[#1a1a1a] border border-[#262626] text-xs font-mono text-neutral-300 rounded transition-colors shrink-0">copy</button>
+        </div>
+        <p class="text-[11px] text-[#555555]">Then just run <code class="text-neutral-300">web66</code> in any project folder!</p>
+      </div>
+
+      <!-- Tab 3: pnpm dlx -->
+      <div id="content-pnpm" class="space-y-3 hidden">
+        <p class="text-xs text-[#888888]">Run with pnpm's instant binary executor:</p>
+        <div class="code-box p-3.5 flex items-center justify-between gap-3 text-left">
+          <code class="text-xs sm:text-sm font-mono text-emerald-300 select-all" id="cmd-tab-pnpm">pnpm dlx github:PRN-6/web66</code>
+          <button onclick="copyCommand('cmd-tab-pnpm', this)" class="px-3 py-1.5 bg-[#0e0e0e] hover:bg-[#1a1a1a] border border-[#262626] text-xs font-mono text-neutral-300 rounded transition-colors shrink-0">copy</button>
+        </div>
+      </div>
+
+      <!-- Tab 4: bunx -->
+      <div id="content-bun" class="space-y-3 hidden">
+        <p class="text-xs text-[#888888]">Ultra-fast execution with Bun:</p>
+        <div class="code-box p-3.5 flex items-center justify-between gap-3 text-left">
+          <code class="text-xs sm:text-sm font-mono text-emerald-300 select-all" id="cmd-tab-bun">bunx github:PRN-6/web66</code>
+          <button onclick="copyCommand('cmd-tab-bun', this)" class="px-3 py-1.5 bg-[#0e0e0e] hover:bg-[#1a1a1a] border border-[#262626] text-xs font-mono text-neutral-300 rounded transition-colors shrink-0">copy</button>
+        </div>
+      </div>
 
     </div>
 
-  </main>
+    <!-- 3-Step Visual Workflow -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="workflow">
+      
+      <div class="card-dark p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-6 h-6 rounded bg-[#0e0e0e] border border-[#262626] flex items-center justify-center text-xs font-bold text-white font-mono">1</span>
+          <h4 class="text-sm font-bold text-white font-mono">Open Project</h4>
+        </div>
+        <p class="text-xs text-[#777777] leading-relaxed">
+          Open your terminal in any repository (Next.js, Express, Python, or Monorepo).
+        </p>
+      </div>
 
-  <!-- Bottom Simple Footer -->
-  <footer class="w-full text-center pt-6 text-xs text-[#555555]">
-    <span>web66 &middot; open source under MIT &middot; built by <a href="https://github.com/PRN-6" target="_blank" class="text-[#888888] hover:text-white transition-colors">PRN-6</a></span>
+      <div class="card-dark p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-6 h-6 rounded bg-[#0e0e0e] border border-[#262626] flex items-center justify-center text-xs font-bold text-white font-mono">2</span>
+          <h4 class="text-sm font-bold text-white font-mono">Execute Web66</h4>
+        </div>
+        <p class="text-xs text-[#777777] leading-relaxed">
+          Run <code class="text-neutral-300 font-mono">npx github:PRN-6/web66</code>. Port 6868 starts automatically.
+        </p>
+      </div>
+
+      <div class="card-dark p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-6 h-6 rounded bg-[#0e0e0e] border border-[#262626] flex items-center justify-center text-xs font-bold text-white font-mono">3</span>
+          <h4 class="text-sm font-bold text-white font-mono">Explore Cosmos</h4>
+        </div>
+        <p class="text-xs text-[#777777] leading-relaxed">
+          Browser opens instantly. Modify files and watch the galaxy update in real-time.
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 6. CLI FLAGS CHEAT SHEET                   -->
+  <!-- ========================================== -->
+  <section class="max-w-5xl mx-auto px-6 mb-24 w-full">
+    
+    <div class="mb-8 text-left">
+      <div class="text-xs text-[#555555] mb-2 font-mono">&gt;_ // cli options</div>
+      <h2 class="font-pixel text-xl sm:text-2xl text-white tracking-wide">COMMAND FLAGS</h2>
+    </div>
+
+    <div class="card-dark overflow-x-auto">
+      <table class="w-full text-left text-xs font-mono border-collapse">
+        <thead>
+          <tr class="border-b border-[#141414] bg-[#070707] text-[#666666]">
+            <th class="p-3.5">Flag</th>
+            <th class="p-3.5">Default</th>
+            <th class="p-3.5">Description</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[#141414]">
+          <tr>
+            <td class="p-3.5 text-white font-bold">-p, --port &lt;number&gt;</td>
+            <td class="p-3.5 text-[#555555]">6868</td>
+            <td class="p-3.5 text-[#888888]">Specify custom HTTP/WebSocket port</td>
+          </tr>
+          <tr>
+            <td class="p-3.5 text-white font-bold">--no-open</td>
+            <td class="p-3.5 text-[#555555]">false</td>
+            <td class="p-3.5 text-[#888888]">Launch server without opening default browser automatically</td>
+          </tr>
+          <tr>
+            <td class="p-3.5 text-white font-bold">-h, --help</td>
+            <td class="p-3.5 text-[#555555]">—</td>
+            <td class="p-3.5 text-[#888888]">Print available flags and usage instructions</td>
+          </tr>
+          <tr>
+            <td class="p-3.5 text-white font-bold">-v, --version</td>
+            <td class="p-3.5 text-[#555555]">—</td>
+            <td class="p-3.5 text-[#888888]">Output current Web66 release version</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 7. TECHNICAL ARCHITECTURE MATRIX          -->
+  <!-- ========================================== -->
+  <section class="max-w-5xl mx-auto px-6 mb-24 w-full" id="specs">
+    
+    <div class="mb-8 text-left">
+      <div class="text-xs text-[#555555] mb-2 font-mono">^ // architecture</div>
+      <h2 class="font-pixel text-xl sm:text-2xl text-white tracking-wide">TECHNICAL SPECIFICATIONS</h2>
+    </div>
+
+    <div class="card-dark overflow-hidden">
+      <table class="w-full text-left text-xs font-mono border-collapse">
+        <tbody class="divide-y divide-[#141414]">
+          <tr>
+            <td class="p-4 text-[#555555] w-1/3">AST Parser Engine</td>
+            <td class="p-4 text-white">Universal AST Symbol Extractor (TS, JS, Python, JSON)</td>
+          </tr>
+          <tr>
+            <td class="p-4 text-[#555555]">WebSocket Streaming</td>
+            <td class="p-4 text-white">Native RFC 6455 Frame Streaming (Pure Node.js crypto &amp; http)</td>
+          </tr>
+          <tr>
+            <td class="p-4 text-[#555555]">Filesystem Watcher</td>
+            <td class="p-4 text-white">Debounced recursive directory monitor with intelligent ignore filters</td>
+          </tr>
+          <tr>
+            <td class="p-4 text-[#555555]">Client Rendering Engine</td>
+            <td class="p-4 text-white">Hardware-accelerated HTML5 Canvas with force decay cooling physics</td>
+          </tr>
+          <tr>
+            <td class="p-4 text-[#555555]">Memory &amp; Bundle Size</td>
+            <td class="p-4 text-white">21 KB bundle size · &lt; 25 MB RAM consumption during full scans</td>
+          </tr>
+          <tr>
+            <td class="p-4 text-[#555555]">Security &amp; Privacy</td>
+            <td class="p-4 text-white">100% Localhost · 0 external network calls · No telemetry</td>
+          </tr>
+          <tr>
+            <td class="p-4 text-[#555555]">Platform Compatibility</td>
+            <td class="p-4 text-white">Windows 10/11, macOS, Linux (Any Node.js 18+ runtime)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 8. FREQUENTLY ASKED QUESTIONS             -->
+  <!-- ========================================== -->
+  <section class="max-w-5xl mx-auto px-6 mb-24 w-full" id="faq">
+    
+    <div class="mb-8 text-left">
+      <div class="text-xs text-[#555555] mb-2 font-mono">? // faq</div>
+      <h2 class="font-pixel text-xl sm:text-2xl text-white tracking-wide">FREQUENTLY ASKED QUESTIONS</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      <div class="card-dark p-6">
+        <h4 class="text-xs font-bold text-white mb-2 font-mono">Does Web66 upload my code to the cloud?</h4>
+        <p class="text-xs text-[#777777] leading-relaxed">
+          Never. Web66 is 100% offline and runs completely on your local machine. It starts a localhost HTTP and WebSocket server. Zero bytes of code or metadata leave your computer.
+        </p>
+      </div>
+
+      <div class="card-dark p-6">
+        <h4 class="text-xs font-bold text-white mb-2 font-mono">How do other developers run it without installing?</h4>
+        <p class="text-xs text-[#777777] leading-relaxed">
+          Anyone with Node.js installed can simply run <code class="text-white">npx github:PRN-6/web66</code> in any project directory. It fetches the lightweight 21 KB bundle and launches immediately.
+        </p>
+      </div>
+
+      <div class="card-dark p-6">
+        <h4 class="text-xs font-bold text-white mb-2 font-mono">Why did nodes jitter/dance in other visualizers?</h4>
+        <p class="text-xs text-[#777777] leading-relaxed">
+          Standard force-directed graph algorithms suffer from infinite repulsion oscillations. Web66 implements simulation temperature decay (<code class="text-neutral-400">simAlpha</code> cooling) and dynamic orbit tier scaling, locking nodes steadily in place once settled.
+        </p>
+      </div>
+
+      <div class="card-dark p-6">
+        <h4 class="text-xs font-bold text-white mb-2 font-mono">Can Web66 handle large monorepos?</h4>
+        <p class="text-xs text-[#777777] leading-relaxed">
+          Yes! Web66 features built-in ignore filters for <code class="text-neutral-400">node_modules</code>, <code class="text-neutral-400">.git</code>, build artifacts (<code class="text-neutral-400">dist</code>, <code class="text-neutral-400">.next</code>), and parses hundreds of modules in under 50ms.
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 9. BOTTOM CALL TO ACTION                   -->
+  <!-- ========================================== -->
+  <section class="max-w-5xl mx-auto px-6 mb-20 w-full text-center">
+    <div class="card-dark p-10 sm:p-14 flex flex-col items-center relative overflow-hidden">
+      
+      <!-- Subtle Ambient Glow in background -->
+      <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <h2 class="font-pixel text-2xl sm:text-4xl text-white tracking-widest mb-4">
+        EXPLORE YOUR UNIVERSE
+      </h2>
+      <p class="text-xs sm:text-sm text-[#777777] max-w-md mx-auto mb-8 font-mono">
+        Turn your code into an explorable cosmic galaxy right now with a single command.
+      </p>
+
+      <div class="code-box p-3.5 flex items-center justify-between gap-3 text-left w-full max-w-md mb-6">
+        <span class="text-xs font-mono text-emerald-300 select-all truncate" id="cmd-bottom">npx github:PRN-6/web66</span>
+        <button onclick="copyCommand('cmd-bottom', this)" class="px-3.5 py-1.5 bg-[#0e0e0e] hover:bg-[#1a1a1a] border border-[#262626] text-xs font-mono text-neutral-300 rounded transition-colors shrink-0">
+          copy
+        </button>
+      </div>
+
+      <div class="flex items-center gap-5 text-xs font-mono">
+        <a href="https://github.com/PRN-6/web66" target="_blank" class="text-white hover:text-emerald-400 transition-colors flex items-center gap-1.5">
+          <span>GitHub Repository</span>
+          <span>↗</span>
+        </a>
+        <span class="text-[#333333]">&middot;</span>
+        <a href="#demo" class="text-[#777777] hover:text-white transition-colors">Test Live Canvas &uarr;</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 10. RETRO VIBE BADGE (Like Omarchy)        -->
+  <!-- ========================================== -->
+  <div class="fixed bottom-4 left-4 z-40 hidden sm:flex items-center gap-3 bg-black/90 backdrop-blur border border-[#1e1e1e] hover:border-[#333333] px-3.5 py-2 rounded-lg text-xs font-mono text-[#888888] transition-all shadow-xl">
+    <div class="w-7 h-7 rounded bg-emerald-950/60 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs">
+      ♪
+    </div>
+    <div class="text-[11px] leading-tight">
+      <div class="text-white font-medium">Cosmic Web Engine</div>
+      <div class="text-[#555555]">Zero Dependencies · Localhost</div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 11. FOOTER                                -->
+  <!-- ========================================== -->
+  <footer class="border-t border-[#141414] py-12 px-6 bg-black">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-[#555555] font-mono">
+      
+      <!-- Left info -->
+      <div class="flex items-center gap-3">
+        <span class="font-pixel text-white text-sm">web66</span>
+        <span>&middot;</span>
+        <span>MIT License</span>
+        <span>&middot;</span>
+        <span>Crafted by <a href="https://github.com/PRN-6" target="_blank" class="text-neutral-300 hover:text-emerald-400 transition-colors">PRN-6</a></span>
+      </div>
+
+      <!-- Center navigation -->
+      <div class="flex items-center gap-5">
+        <a href="#demo" class="hover:text-white transition-colors">Demo</a>
+        <a href="#features" class="hover:text-white transition-colors">Features</a>
+        <a href="#specs" class="hover:text-white transition-colors">Specs</a>
+        <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+        <a href="https://github.com/PRN-6/web66" target="_blank" class="hover:text-white transition-colors">GitHub ↗</a>
+      </div>
+
+      <!-- Right Back to Top -->
+      <div>
+        <a href="#" class="text-neutral-400 hover:text-white transition-colors">Back to top &uarr;</a>
+      </div>
+
+    </div>
   </footer>
 
-  <!-- Canvas Demo Script -->
+  <!-- Scripts -->
   <script src="demo.js"></script>
   <script>
-    function copyCommand(btn) {
-      navigator.clipboard.writeText('npx github:PRN-6/web66');
-      const original = document.getElementById('cmd-btn-text').textContent;
-      document.getElementById('cmd-btn-text').textContent = 'copied to clipboard!';
-      document.getElementById('cmd-btn-text').style.color = '#34d399';
+    function copyCommand(elementId, btn) {
+      const text = document.getElementById(elementId).textContent;
+      navigator.clipboard.writeText(text);
+      const original = btn.textContent;
+      btn.textContent = 'copied!';
+      btn.style.color = '#34d399';
       setTimeout(() => {
-        document.getElementById('cmd-btn-text').textContent = original;
-        document.getElementById('cmd-btn-text').style.color = '';
+        btn.textContent = original;
+        btn.style.color = '';
       }, 2000);
     }
 
-    let userClicks = 0;
-    let totalClicks = 108;
-    function clickCounter() {
-      userClicks++;
-      totalClicks++;
-      document.getElementById('your-clicks').textContent = userClicks;
-      document.getElementById('total-clicks').textContent = totalClicks;
+    function switchTab(tabKey) {
+      const tabs = ['npx', 'npm', 'pnpm', 'bun'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('tab-' + t);
+        const content = document.getElementById('content-' + t);
+        if (t === tabKey) {
+          btn.className = 'px-3 py-1 bg-neutral-800 text-white rounded border border-neutral-600';
+          content.classList.remove('hidden');
+        } else {
+          btn.className = 'px-3 py-1 text-[#777777] hover:text-white rounded border border-transparent';
+          content.classList.add('hidden');
+        }
+      });
     }
   </script>
 </body>
