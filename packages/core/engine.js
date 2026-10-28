@@ -13,7 +13,8 @@ class AnalysisEngine {
   constructor(options = {}) {
     this.rootPath = path.resolve(options.rootPath || '.');
     this.ignorePatterns = options.ignorePatterns || [
-      'node_modules', '.git', 'dist', 'build', '.next', '.cache', 'coverage', '.turbo'
+      'node_modules', '.git', 'dist', 'build', '.next', '.cache', 'coverage', '.turbo',
+      '__pycache__', 'venv', '.venv', 'env', '.env', '.pytest_cache', '.mypy_cache', '.tox', 'site-packages', 'eggs', '.eggs'
     ];
     this.graph = {
       nodes: new Map(),
@@ -356,6 +357,28 @@ class AnalysisEngine {
         });
       }
     }
+
+    // Direct imports: import module, module as alias
+    const directImportRegex = /^ *import +([a-zA-Z0-9_., ]+)/gm;
+    while ((m = directImportRegex.exec(content)) !== null) {
+      const rawModules = m[1].split(',');
+      for (let raw of rawModules) {
+        const modName = raw.trim().split(/\s+as\s+/)[0].trim();
+        if (!modName) continue;
+        const resolved = this.resolvePythonImport(filePath, modName);
+        if (resolved) {
+          const targetRel = path.relative(this.rootPath, resolved).replace(/\\/g, '/');
+          const targetId = `file:${targetRel}`;
+          this.addEdge({
+            id: `edge:${fileId}->${targetId}`,
+            source: fileId,
+            target: targetId,
+            type: 'IMPORTS',
+            label: 'imports'
+          });
+        }
+      }
+    }
   }
 
   parsePackageJson(filePath, relPath, fileId, content) {
@@ -411,16 +434,33 @@ class AnalysisEngine {
   resolvePythonImport(sourceFile, moduleName) {
     const dir = path.dirname(sourceFile);
     const fsSync = require('fs');
+
+    const checkPaths = (basePath) => {
+      // 1. Direct file: path/mod.py
+      const pyFile = basePath + '.py';
+      if (fsSync.existsSync(pyFile) && fsSync.statSync(pyFile).isFile()) return pyFile;
+
+      // 2. Package module: path/mod/__init__.py
+      const initFile = path.join(basePath, '__init__.py');
+      if (fsSync.existsSync(initFile) && fsSync.statSync(initFile).isFile()) return initFile;
+
+      return null;
+    };
+
     if (moduleName.startsWith('.')) {
       const relativePart = moduleName.replace(/^\.+/, '').replace(/\./g, path.sep);
-      const cand = path.resolve(dir, relativePart + '.py');
-      if (fsSync.existsSync(cand)) return cand;
+      const cand = path.resolve(dir, relativePart);
+      const resolved = checkPaths(cand);
+      if (resolved) return resolved;
     } else {
       const parts = moduleName.replace(/\./g, path.sep);
-      const cand1 = path.resolve(dir, parts + '.py');
-      if (fsSync.existsSync(cand1)) return cand1;
-      const cand2 = path.resolve(this.rootPath, parts + '.py');
-      if (fsSync.existsSync(cand2)) return cand2;
+      const cand1 = path.resolve(dir, parts);
+      const res1 = checkPaths(cand1);
+      if (res1) return res1;
+
+      const cand2 = path.resolve(this.rootPath, parts);
+      const res2 = checkPaths(cand2);
+      if (res2) return res2;
     }
     return null;
   }
@@ -428,11 +468,11 @@ class AnalysisEngine {
   detectRootFile(files) {
     if (files.length === 0) return null;
 
-    // 1. Check for standard entry filenames
+    // 1. Check for standard entry filenames across JS/TS/Python
     const rootCandidates = [
       'index.ts', 'main.ts', 'app.ts', 'server.ts',
       'index.js', 'main.js', 'app.js', 'server.js',
-      'app.py', 'main.py', '__init__.py', 'index.py'
+      'app.py', 'main.py', 'manage.py', 'run.py', 'wsgi.py', 'asgi.py', '__init__.py', 'index.py'
     ];
 
     for (const cand of rootCandidates) {
