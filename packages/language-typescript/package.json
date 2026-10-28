@@ -1,9 +1,0 @@
-﻿{
-  "name": "@web66/language-typescript",
-  "version": "0.0.1",
-  "main": "index.ts",
-  "types": "index.ts",
-  "dependencies": {
-    "@web66/parser-engine": "workspace:*"
-  }
-}
