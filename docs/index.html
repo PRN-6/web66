@@ -1,201 +1,301 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web66 — Cosmic Codebase Intelligence</title>
-  <meta name="description" content="Google Maps for Source Code. Transforms any codebase into an explorable cosmic web of organic glowing blobs.">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23fbbf24'/></svg>">
+  <title>Web66 — Beautiful, fun & universal codebase intelligence</title>
+  <meta name="description" content="The malleable codebase visualizer for the age of agents. Vibe your way through every dependency, AST, or architecture.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"JetBrains Mono"', 'monospace'],
+            pixel: ['"Silkscreen"', 'monospace'],
+          },
+          colors: {
+            omarchy: {
+              bg: '#07130e',
+              card: '#0a1a13',
+              border: '#1b382b',
+              borderLight: '#2c5945',
+              mint: '#6ee7b7',
+              mintHover: '#86efac',
+              cream: '#fef9c3',
+              muted: '#7fa392',
+              darkMint: '#0d251b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #07130e;
+      color: #fef9c3;
+      font-family: 'JetBrains Mono', monospace;
+      overflow-x: hidden;
+    }
+
+    /* Pixel Mosaic Canvas on Left and Right borders */
+    .pixel-sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 140px;
+      pointer-events: none;
+      z-index: 0;
+      background-repeat: repeat-y;
+    }
+
+    /* Giant 3D-Shaded Retro Pixel Title */
+    .omarchy-title {
+      font-family: 'Silkscreen', monospace;
+      font-size: clamp(3.5rem, 11vw, 9.5rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      text-transform: uppercase;
+      background: linear-gradient(
+        180deg,
+        #bbf7d0 0%,
+        #86efac 20%,
+        #4ade80 40%,
+        #22c55e 60%,
+        #15803d 80%,
+        #0f3d26 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.8));
+      user-select: none;
+    }
+
+    /* Glowing pixel box button */
+    .btn-omarchy-primary {
+      background-color: #6ee7b7;
+      color: #07130e;
+      font-weight: 700;
+      transition: all 0.15s ease;
+    }
+    .btn-omarchy-primary:hover {
+      background-color: #86efac;
+      transform: translateY(-1px);
+    }
+
+    .btn-omarchy-secondary {
+      background-color: #0c2018;
+      border: 1px solid #1f4233;
+      color: #fef9c3;
+      transition: all 0.15s ease;
+    }
+    .btn-omarchy-secondary:hover {
+      background-color: #122d22;
+      border-color: #2e624c;
+      color: #ffffff;
+    }
+  </style>
 </head>
-<body>
+<body class="min-h-full flex flex-col justify-between relative selection:bg-emerald-900 selection:text-white">
 
-  <div class="container">
+  <!-- SVG Mosaic Pixel Pattern Borders (Left and Right) -->
+  <svg class="fixed left-0 top-0 h-full w-28 sm:w-36 pointer-events-none opacity-40 select-none z-0" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="pixel-left" width="40" height="40" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="10" height="10" fill="#2dd4bf" opacity="0.3"/>
+        <rect x="10" y="10" width="10" height="10" fill="#14b8a6" opacity="0.5"/>
+        <rect x="0" y="20" width="10" height="10" fill="#0f766e" opacity="0.4"/>
+        <rect x="20" y="0" width="10" height="10" fill="#5eead4" opacity="0.2"/>
+        <rect x="10" y="30" width="10" height="10" fill="#0d9488" opacity="0.3"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#pixel-left)" />
+  </svg>
 
-    <!-- Top Minimalist Navigation Bar -->
-    <nav class="navbar">
-      <a href="#home" class="nav-link active">home</a>
-      <span class="nav-dot">·</span>
-      <a href="#demo" class="nav-link">demo</a>
-      <span class="nav-dot">·</span>
-      <a href="#features" class="nav-link">features</a>
-      <span class="nav-dot">·</span>
-      <a href="#cli" class="nav-link">cli</a>
-      <span class="nav-dot">·</span>
-      <a href="https://github.com/PRN-6/web66" target="_blank" class="nav-link">github ↗</a>
-    </nav>
+  <svg class="fixed right-0 top-0 h-full w-28 sm:w-36 pointer-events-none opacity-40 select-none z-0" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="pixel-right" width="40" height="40" patternUnits="userSpaceOnUse">
+        <rect x="30" y="0" width="10" height="10" fill="#2dd4bf" opacity="0.3"/>
+        <rect x="20" y="10" width="10" height="10" fill="#14b8a6" opacity="0.5"/>
+        <rect x="30" y="20" width="10" height="10" fill="#0f766e" opacity="0.4"/>
+        <rect x="10" y="0" width="10" height="10" fill="#5eead4" opacity="0.2"/>
+        <rect x="20" y="30" width="10" height="10" fill="#0d9488" opacity="0.3"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#pixel-right)" />
+  </svg>
 
-    <!-- Bento Row 1: Profile Card + Introduction Card -->
-    <section class="bento-grid" id="home">
+  <!-- Top Navigation Bar -->
+  <header class="w-full px-6 sm:px-12 py-5 relative z-10 flex items-center justify-between">
+    
+    <!-- Left Logo & Nav Links -->
+    <div class="flex items-center gap-8">
+      <!-- Retro square logo -->
+      <a href="#" class="w-8 h-8 rounded border border-emerald-500/40 bg-emerald-950/40 flex items-center justify-center p-1.5 hover:border-emerald-400 transition-colors">
+        <div class="w-full h-full border border-emerald-400/80 bg-emerald-500/20 rounded-sm"></div>
+      </a>
 
-      <!-- Left Profile Card -->
-      <aside class="bento-card profile-card">
-        <div>
-          <div class="hero-avatar-box">
-            <div class="pixel-art-screen">
-              <div class="pixel-orbit">
-                <span class="pixel-planet"></span>
-              </div>
-              <div class="pixel-sun"></div>
-            </div>
-          </div>
+      <nav class="hidden md:flex items-center gap-7 text-xs font-mono text-[#8cb39f]">
+        <a href="#about" class="hover:text-[#fef9c3] transition-colors">About</a>
+        <a href="#manual" class="hover:text-[#fef9c3] transition-colors">Manual</a>
+        <a href="#features" class="hover:text-[#fef9c3] transition-colors">Features</a>
+        <a href="https://github.com/PRN-6/web66" target="_blank" class="hover:text-[#fef9c3] transition-colors">GitHub</a>
+      </nav>
+    </div>
 
-          <h1 class="profile-name">prinson</h1>
-          <div class="profile-tagline">* Prinson Royal Nazareth<br>Developer · Builder</div>
+    <!-- Right Icons & Install CTA -->
+    <div class="flex items-center gap-5 text-[#8cb39f]">
+      <!-- Color Palette Icon -->
+      <button onclick="toggleCanvasModal()" class="hover:text-[#fef9c3] transition-colors" title="Toggle Cosmic View">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+      </button>
 
-          <div class="profile-quote">
-            "If I don't have to do it, I won't. If I have to do it, I'll make it quick."<br>
-            — Houtarou Oreki
-          </div>
+      <!-- Globe Icon -->
+      <a href="https://prn-6.github.io/web66" class="hover:text-[#fef9c3] transition-colors" title="Website">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </a>
+
+      <!-- GitHub Icon -->
+      <a href="https://github.com/PRN-6/web66" target="_blank" class="hover:text-[#fef9c3] transition-colors" title="GitHub">
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a>
+
+      <!-- Install Mint Button -->
+      <button onclick="copyCommand()" class="btn-omarchy-primary px-4 py-1.5 rounded text-xs font-mono tracking-wide flex items-center gap-1.5">
+        <span id="install-btn-text">Install</span>
+      </button>
+    </div>
+
+  </header>
+
+  <!-- Hero Content Center -->
+  <main class="w-full flex-1 flex flex-col items-center justify-center text-center px-4 py-12 relative z-10 max-w-4xl mx-auto">
+    
+    <!-- Top Announcement Capsule -->
+    <a href="https://github.com/PRN-6/web66" target="_blank" class="inline-flex items-center gap-2 px-4 py-1 rounded-full text-xs font-mono text-[#8cb39f] bg-[#0c2018]/60 border border-[#1f4233] hover:border-[#347055] hover:text-[#fef9c3] transition-all mb-10 group">
+      <span>Universal Codebase Intelligence v1.0 is live on GitHub</span>
+      <span class="text-emerald-400 group-hover:translate-x-0.5 transition-transform">→</span>
+    </a>
+
+    <!-- Giant Omarchy-Style Pixel Title: WEB66 -->
+    <div class="mb-8">
+      <h1 class="omarchy-title">
+        WEB66
+      </h1>
+    </div>
+
+    <!-- Main Headline in Pale Cream -->
+    <h2 class="text-xl sm:text-2xl font-bold font-mono text-[#fef9c3] mb-4 tracking-tight">
+      Beautiful, fun &amp; universal codebase intelligence
+    </h2>
+
+    <!-- Subtitle in Muted Mint -->
+    <p class="text-xs sm:text-sm font-mono text-[#8cb39f] max-w-xl mx-auto leading-relaxed mb-10">
+      The malleable visualizer for the age of code.<br>
+      Vibe your way through every dependency, AST, or architecture.
+    </p>
+
+    <!-- The 2 Omarchy-Style CTA Buttons -->
+    <div class="flex flex-wrap items-center justify-center gap-4 mb-8">
+      <button onclick="copyCommand()" class="btn-omarchy-primary px-6 py-2.5 rounded-md text-xs font-mono tracking-wider flex items-center gap-2">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        <span id="cta-install-text">Get Web66</span>
+      </button>
+
+      <button onclick="toggleCanvasModal()" class="btn-omarchy-secondary px-6 py-2.5 rounded-md text-xs font-mono tracking-wider flex items-center gap-2">
+        <span>▶</span>
+        <span>See it in action</span>
+      </button>
+    </div>
+
+    <!-- Terminal Command Bubble -->
+    <div class="inline-flex items-center gap-3 px-4 py-2 rounded-lg bg-[#0a1a13]/90 border border-[#1c382b] text-xs font-mono text-[#8cb39f]">
+      <span class="text-emerald-400 select-none">&gt;</span>
+      <code class="text-[#fef9c3] select-all">npx github:PRN-6/web66</code>
+      <button onclick="copyCommand()" class="text-[10px] text-emerald-400 hover:text-white transition-colors ml-2 underline">
+        copy
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Interactive Cosmic Canvas Modal (Opens on "See it in action") -->
+  <div id="canvas-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-10">
+    <div class="w-full max-w-5xl h-[560px] bg-[#07130e] border border-[#1f4233] rounded-xl overflow-hidden flex flex-col relative shadow-2xl">
+      
+      <!-- Modal Header -->
+      <div class="h-10 bg-[#0a1a13] border-b border-[#1f4233] px-4 flex items-center justify-between text-xs font-mono text-[#8cb39f]">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Web66 Cosmic Web Canvas — Interactive Demo</span>
         </div>
-
-        <div class="social-links">
-          <a href="https://github.com/PRN-6" target="_blank" class="social-item">github <span class="arrow-icon">↗</span></a>
-          <a href="https://github.com/PRN-6/web66" target="_blank" class="social-item">web66 repo <span class="arrow-icon">↗</span></a>
-          <a href="mailto:prinsonnazareth2@gmail.com" class="social-item">email <span class="arrow-icon">↗</span></a>
-          <a href="https://x.com" target="_blank" class="social-item">x <span class="arrow-icon">↗</span></a>
-        </div>
-      </aside>
-
-      <!-- Right Main Web66 Intro Card -->
-      <main class="bento-card">
-        <div class="card-tag">&gt;_ // about web66</div>
-
-        <p style="font-size: 14px; color: var(--text-white); margin-bottom: 12px; font-weight: 500;">
-          Google Maps for Source Code. Transforms any codebase into an explorable cosmic web of organic glowing blobs.
-        </p>
-
-        <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 16px;">
-          Web66 is a universal codebase intelligence engine. It scans your Abstract Syntax Tree (AST), extracts functions, classes, and dependencies, and renders an interactive radial galaxy on your localhost with instant live sync.
-        </p>
-
-        <!-- Command Prompt Box -->
-        <div class="card-tag" style="margin-top: 14px; margin-bottom: 6px;">&gt;_ // quickstart (no install needed)</div>
-        <div class="command-box">
-          <span class="cmd-prefix">&gt;</span>
-          <code class="cmd-text" id="cmd-run">npx github:PRN-6/web66</code>
-          <button class="copy-btn" onclick="copyCommand('npx github:PRN-6/web66', this)">
-            <span class="copy-label">copy</span>
-          </button>
-        </div>
-
-        <div class="command-box" style="margin-top: 8px;">
-          <span class="cmd-prefix">&gt;</span>
-          <code class="cmd-text" id="cmd-global">npm install -g github:PRN-6/web66</code>
-          <button class="copy-btn" onclick="copyCommand('npm install -g github:PRN-6/web66', this)">
-            <span class="copy-label">copy</span>
-          </button>
-        </div>
-
-        <!-- Buttons -->
-        <div class="btn-group">
-          <a href="https://github.com/PRN-6/web66" target="_blank" class="pill-button">
-            ⭐ star on github ↗
-          </a>
-          <a href="#demo" class="pill-button">
-            🪐 test live demo ↓
-          </a>
-        </div>
-
-        <!-- Click Counter Retro Widget -->
-        <div class="counter-box" onclick="incrementClick()">
-          <span class="counter-click">click me )</span>
-          <span class="counter-num" id="total-clicks">124</span>
-          <span style="color: var(--text-dim);">you :</span>
-          <span class="counter-num" id="user-clicks">0</span>
-        </div>
-      </main>
-
-    </section>
-
-    <!-- Bento Row 2: Live Interactive Canvas Demo -->
-    <section class="bento-card" id="demo" style="margin-bottom: 16px;">
-      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-        <div class="card-tag" style="margin-bottom: 0;">* // interactive cosmic web preview</div>
-        <div style="font-size: 11px; color: var(--text-dim);">drag blobs to play with gravitational physics</div>
+        <button onclick="toggleCanvasModal()" class="text-[#8cb39f] hover:text-[#fef9c3] text-lg leading-none">
+          ✕
+        </button>
       </div>
 
-      <div class="demo-canvas-wrapper">
-        <canvas id="demo-canvas"></canvas>
-        <div class="demo-watermark">WEB66 COSMOS ENGINE · LIVE DEMO</div>
-        <div class="demo-controls-hint">● Click & Drag Blobs</div>
-      </div>
-    </section>
-
-    <!-- Bento Row 3: Entities & Features Grid -->
-    <section class="bento-grid-three" id="features">
-
-      <!-- Box 1: Entities -->
-      <div class="bento-card">
-        <div class="card-tag">&lt;&gt; // celestial entities</div>
-        <div class="badge-grid" style="grid-template-columns: 1fr;">
-          <div class="tech-badge"><span class="blob-dot dot-gold"></span> Core File (Center Sun)</div>
-          <div class="tech-badge"><span class="blob-dot dot-cyan"></span> Files &amp; Modules (Orbits)</div>
-          <div class="tech-badge"><span class="blob-dot dot-green"></span> Functions (Satellites)</div>
-          <div class="tech-badge"><span class="blob-dot dot-purple"></span> Classes &amp; Blueprints</div>
-          <div class="tech-badge"><span class="blob-dot dot-indigo"></span> Types &amp; Interfaces</div>
+      <!-- Canvas -->
+      <div class="flex-1 relative w-full h-full bg-[#050e0a]">
+        <canvas id="demo-canvas" class="w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
+        <div class="absolute bottom-3 left-4 text-[10px] font-mono text-[#7fa392] bg-black/70 px-2 py-1 rounded border border-[#1b382b] pointer-events-none">
+          Click &amp; drag blobs to test force-directed gravitational physics
         </div>
       </div>
-
-      <!-- Box 2: Live Sync -->
-      <div class="bento-card">
-        <div class="card-tag">&sim; // live file watcher</div>
-        <p style="color: var(--text-muted); font-size: 11px; margin-bottom: 12px;">
-          Built-in recursive file watcher triggers automatic re-analysis whenever you edit code.
-        </p>
-        <div class="command-box" style="padding: 8px 10px; font-size: 11px; margin-bottom: 10px;">
-          <span class="cmd-prefix">&#9679;</span>
-          <span style="color: var(--accent-emerald);">LIVE SYNC ACTIVE</span>
-        </div>
-        <p style="color: var(--text-dim); font-size: 11px;">
-          Changes are broadcast instantly over RFC 6455 WebSockets without resetting your camera pan or zoom.
-        </p>
-      </div>
-
-      <!-- Box 3: Technical Specs -->
-      <div class="bento-card" id="cli">
-        <div class="card-tag">^ // technical specs</div>
-        <div class="badge-grid" style="grid-template-columns: 1fr;">
-          <div class="tech-badge"><strong style="color: #fff;">0</strong> External Dependencies</div>
-          <div class="tech-badge"><strong style="color: #fff;">21 KB</strong> Total Package Size</div>
-          <div class="tech-badge"><strong style="color: #fff;">&lt; 10ms</strong> Startup Duration</div>
-          <div class="tech-badge"><strong style="color: #fff;">Universal</strong> TS, JS, Python, JSON</div>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <div>web66 &middot; crafted by <a href="https://github.com/PRN-6" target="_blank">prinson</a></div>
-      <div>
-        <a href="https://github.com/PRN-6/web66" target="_blank">github repo ↗</a> &nbsp;&middot;&nbsp; 
-        <a href="#home">back to top ↑</a>
-      </div>
-    </footer>
-
+    </div>
   </div>
 
+  <!-- Bottom Left Music Player Toast (Exact Omarchy Widget) -->
+  <footer class="w-full px-6 sm:px-12 py-5 relative z-10 flex items-center justify-between text-xs font-mono">
+    
+    <!-- Retro Player Widget -->
+    <div class="inline-flex items-center gap-3 px-3 py-2 rounded-lg bg-[#0a1a13]/90 border border-[#1f4233] text-[11px] shadow-lg">
+      <div class="w-7 h-7 rounded bg-[#12281e] border border-[#234538] flex items-center justify-center text-emerald-400 shrink-0">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </div>
+      <div class="text-left">
+        <div class="text-[#fef9c3] font-semibold truncate max-w-[150px] sm:max-w-[200px]">We Can Fix Everything</div>
+        <div class="text-[#7fa392] text-[10px]">Kevin Koontz</div>
+      </div>
+      <div class="text-[#7fa392] text-xs ml-1 select-none">···</div>
+    </div>
+
+    <!-- Right Small Tag -->
+    <div class="text-[#7fa392] text-[11px] hidden sm:block">
+      MIT Licensed &middot; Built by <a href="https://github.com/PRN-6" target="_blank" class="text-[#fef9c3] hover:underline">PRN-6</a>
+    </div>
+
+  </footer>
+
+  <!-- Scripts -->
   <script src="demo.js"></script>
   <script>
-    function copyCommand(text, btn) {
-      navigator.clipboard.writeText(text);
-      const label = btn.querySelector('.copy-label');
-      label.textContent = 'copied!';
-      btn.classList.add('copied');
+    function copyCommand() {
+      navigator.clipboard.writeText('npx github:PRN-6/web66');
+      
+      const btn = document.getElementById('install-btn-text');
+      const cta = document.getElementById('cta-install-text');
+      if (btn) btn.textContent = 'Copied!';
+      if (cta) cta.textContent = 'Command Copied!';
+
       setTimeout(() => {
-        label.textContent = 'copy';
-        btn.classList.remove('copied');
+        if (btn) btn.textContent = 'Install';
+        if (cta) cta.textContent = 'Get Web66';
       }, 2000);
     }
 
-    let userClicks = 0;
-    let totalClicks = 124;
-    function incrementClick() {
-      userClicks++;
-      totalClicks++;
-      document.getElementById('user-clicks').textContent = userClicks;
-      document.getElementById('total-clicks').textContent = totalClicks;
+    function toggleCanvasModal() {
+      const modal = document.getElementById('canvas-modal');
+      modal.classList.toggle('hidden');
     }
   </script>
 </body>

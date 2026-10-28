@@ -241,12 +241,18 @@
     computeRadialWebLayout();
   }
 
+  // Simulation cooling / temperature (prevents endless dancing)
+  let simAlpha = 1.0;
+
+  function wakeSimulation(amount = 0.4) {
+    simAlpha = Math.max(simAlpha, amount);
+  }
+
   /**
-   * Compute radial orbital coordinates for a web structure:
+   * Compute radial orbital coordinates for a web structure with dynamic spacing:
    * Level 0 (Center): Root Node
-   * Level 1: Files imported directly by Root or importing Root (Orbit 1)
-   * Level 2: Secondary Files (Orbit 2)
-   * Sub-nodes (Functions, Classes, Types): Orbit around their respective parent File node!
+   * Level 1+: Concentric orbital tiers scaled dynamically by node count
+   * Sub-nodes (Functions, Classes, Types): Orbit around their respective parent File node
    */
   function computeRadialWebLayout() {
     if (nodes.length === 0) return;
@@ -298,18 +304,23 @@
       tiers.get(dist).push(file);
     });
 
-    // Position files in concentric radial orbits
-    const tierRadii = [0, 280, 480, 680, 880];
+    // Dynamically calculate tier radii based on node count to prevent crowding
+    let currentRadius = 0;
     tiers.forEach((filesInTier, tierIndex) => {
-      const radius = tierRadii[tierIndex] || tierIndex * 220;
-      const angleStep = (Math.PI * 2) / filesInTier.length;
+      const count = filesInTier.length;
+      // Circumference needed for count nodes with 90px spacing
+      const minCircumference = count * 90;
+      const minRadius = Math.max(300, minCircumference / (2 * Math.PI));
+      currentRadius = Math.max(currentRadius + 220, minRadius);
+
+      const angleStep = (Math.PI * 2) / count;
       const angleOffset = tierIndex * 0.45; // stagger tiers
 
       filesInTier.forEach((file, idx) => {
         const theta = angleOffset + idx * angleStep;
-        file.targetX = Math.cos(theta) * radius;
-        file.targetY = Math.sin(theta) * radius;
-        file.orbitRadius = radius;
+        file.targetX = Math.cos(theta) * currentRadius;
+        file.targetY = Math.sin(theta) * currentRadius;
+        file.orbitRadius = currentRadius;
       });
     });
 
@@ -322,7 +333,6 @@
     symbolNodes.forEach((sym) => {
       let parentId = sym.parentFile;
       if (!parentId) {
-        // Find declaring edge
         const declEdge = edges.find((e) => e.target === sym.id && e.type === 'DECLARES');
         if (declEdge) parentId = declEdge.source;
       }
@@ -337,7 +347,8 @@
       const childCount = children.length;
       if (childCount === 0) return;
 
-      const subOrbitRadius = parent.isRoot ? 110 : 80;
+      // Scale satellite orbit by child count
+      const subOrbitRadius = Math.max(parent.isRoot ? 120 : 80, (childCount * 45) / (2 * Math.PI));
       const angleStep = (Math.PI * 2) / childCount;
 
       children.forEach((child, idx) => {
@@ -348,23 +359,37 @@
       });
     });
 
-    // If initial load, snap positions to targets immediately
-    if (nodes.every((n) => n.x === 0 && n.y === 0)) {
-      nodes.forEach((n) => {
+    // Initialize positions directly to targets on load (no explosion)
+    nodes.forEach((n) => {
+      if (n.x === 0 && n.y === 0) {
         n.x = n.targetX;
         n.y = n.targetY;
-      });
-    }
+      }
+      n.vx = 0;
+      n.vy = 0;
+    });
+
+    wakeSimulation(1.0);
   }
 
-  // --- Force Simulation & Physics ---
+  // --- Force Simulation & Physics with Decay (No Endless Dancing!) ---
   function updatePhysics() {
-    const kRepulsion = 1600;
-    const kSpring = 0.04;
-    const kOrbitAnchor = isRadialWebMode ? 0.08 : 0.005;
-    const damping = 0.84;
+    // If simulation has cooled down and user isn't dragging, freeze physics completely
+    if (simAlpha < 0.003 && !draggedNode) {
+      // Zero out tiny residual velocities
+      nodes.forEach((n) => {
+        n.vx = 0;
+        n.vy = 0;
+      });
+      return;
+    }
 
-    // 1. Repulsion between blobs
+    const kRepulsion = 800 * simAlpha;
+    const kSpring = 0.03 * simAlpha;
+    const kOrbitAnchor = (isRadialWebMode ? 0.12 : 0.01) * simAlpha;
+    const damping = 0.72; // strong damping stops jitter
+
+    // 1. Soft Repulsion between nearby blobs
     for (let i = 0; i < nodes.length; i++) {
       const a = nodes[i];
       if (a === draggedNode) continue;
@@ -374,11 +399,11 @@
         const dx = b.x - a.x;
         const dy = b.y - a.y;
         const distSq = dx * dx + dy * dy || 1;
-        const minDist = a.radius + b.radius + 30;
+        const minDist = a.radius + b.radius + 20;
 
-        if (distSq < minDist * minDist * 4) {
+        if (distSq < minDist * minDist * 2.5) {
           const dist = Math.sqrt(distSq);
-          const force = (kRepulsion / (distSq + 10)) * (minDist / (dist + 1));
+          const force = Math.min(8, (kRepulsion / (distSq + 20)));
           const fx = (dx / dist) * force;
           const fy = (dy / dist) * force;
 
@@ -400,7 +425,7 @@
       const dy = b.y - a.y;
       const dist = Math.sqrt(dx * dx + dy * dy) || 1;
       const idealDist = edge.type === 'DECLARES' ? 85 : 220;
-      const force = (dist - idealDist) * kSpring;
+      const force = Math.min(6, (dist - idealDist) * kSpring);
 
       const fx = (dx / dist) * force;
       const fy = (dy / dist) * force;
@@ -415,7 +440,7 @@
       }
     });
 
-    // 3. Anchor toward radial web target or center
+    // 3. Anchor toward radial web target
     nodes.forEach((node) => {
       if (node === draggedNode) return;
 
@@ -423,16 +448,29 @@
         node.vx += (node.targetX - node.x) * kOrbitAnchor;
         node.vy += (node.targetY - node.y) * kOrbitAnchor;
       } else {
-        // gentle centering
         node.vx -= node.x * 0.001;
         node.vy -= node.y * 0.001;
       }
 
       node.vx *= damping;
       node.vy *= damping;
+
+      // Clamp max velocity
+      node.vx = Math.max(-10, Math.min(10, node.vx));
+      node.vy = Math.max(-10, Math.min(10, node.vy));
+
+      // Cut off tiny jitter
+      if (Math.abs(node.vx) < 0.02) node.vx = 0;
+      if (Math.abs(node.vy) < 0.02) node.vy = 0;
+
       node.x += node.vx;
       node.y += node.vy;
     });
+
+    // Cool down simulation smoothly each frame
+    if (!draggedNode) {
+      simAlpha *= 0.96;
+    }
 
     // Smooth camera tracking
     camera.x += (camera.targetX - camera.x) * 0.1;
@@ -807,6 +845,7 @@
     const node = findNodeAt(e.clientX, e.clientY);
     if (node) {
       draggedNode = node;
+      wakeSimulation(0.5);
       selectNode(node);
     } else {
       isPanning = true;
@@ -821,6 +860,7 @@
       draggedNode.y = world.y;
       draggedNode.vx = 0;
       draggedNode.vy = 0;
+      wakeSimulation(0.2);
     } else if (isPanning) {
       camera.targetX = e.clientX - panStart.x;
       camera.targetY = e.clientY - panStart.y;
@@ -832,6 +872,9 @@
   });
 
   window.addEventListener('mouseup', () => {
+    if (draggedNode) {
+      wakeSimulation(0.3);
+    }
     draggedNode = null;
     isPanning = false;
   });
