@@ -1,5 +1,8 @@
 # 🌌 Web66 — Cosmic Codebase Intelligence
 
+[![npm version](https://img.shields.io/npm/v/@leozodiac/web66.svg?color=cb3837)](https://www.npmjs.com/package/@leozodiac/web66)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 > **Google Maps for Source Code.** Transforms any codebase into an explorable cosmic web of organic glowing blobs, with instant auto-scan, zero-config local server, and live sync.
 
 ---
@@ -10,13 +13,13 @@ Anyone can run Web66 in **any** project directory without installing anything:
 
 ```bash
 # Analyze and serve current directory (opens http://localhost:6868)
-npx github:PRN-6/web66
+npx @leozodiac/web66
 
 # Or analyze a specific folder
-npx github:PRN-6/web66 ./src
+npx @leozodiac/web66 ./src
 
 # Change port or disable browser auto-open
-npx github:PRN-6/web66 . --port 3000 --no-open
+npx @leozodiac/web66 . --port 3000 --no-open
 ```
 
 ---
@@ -26,8 +29,8 @@ npx github:PRN-6/web66 . --port 3000 --no-open
 To use `web66` anywhere on your machine like a native tool:
 
 ```bash
-# Install globally from GitHub
-npm install -g github:PRN-6/web66
+# Install globally from npm
+npm install -g @leozodiac/web66
 ```
 
 Then run it in **any** project folder:
@@ -42,7 +45,7 @@ web66 .
 Install as a devDependency in your repository:
 
 ```bash
-npm install -D github:PRN-6/web66
+npm install -D @leozodiac/web66
 ```
 
 Add to your `package.json`:
