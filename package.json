@@ -1,6 +1,6 @@
 {
   "name": "@leozodiac/web66",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Universal Codebase Intelligence & Cosmic Web Dependency Visualizer",
   "main": "packages/core/engine.js",
   "bin": {
